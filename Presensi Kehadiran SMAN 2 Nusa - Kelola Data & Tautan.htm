@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presensi Kehadiran SMAN 2 Nusa - Kelola Data & Tautan</title>
-    <!-- Tailwind CSS -->
+    <title>Presensi Kehadiran SMAN 2 Nusa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,45 +12,59 @@
                 extend: {
                     colors: {
                         brand: { 50: '#eef2ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom Scrollbar for better UI */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 h-full flex flex-col transition-colors duration-200">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 h-full flex flex-col transition-colors duration-300">
 
     <!-- Header -->
-    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm py-4 px-4 sm:px-6 flex flex-wrap justify-between items-center gap-4">
-        <div class="flex items-center space-x-3">
-            <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md">
+    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm py-4 px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center gap-4 sticky top-0 z-40">
+        <div class="flex items-center space-x-3 w-full md:w-auto">
+            <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md flex-shrink-0">
                 <i class="fa-solid fa-school text-xl"></i>
             </div>
             <div>
-                <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Presensi Kehadiran SMAN 2 Nusa</h1>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Pilih siswa per kelas, tambah/edit data, dan kelola tautan otomatis</p>
+                <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white leading-tight">Presensi Kehadiran</h1>
+                <p class="text-xs text-gray-500 dark:text-gray-400">SMAN 2 Nusa - Kelola Data & Tautan Otomatis</p>
             </div>
         </div>
         
-        <div class="flex items-center flex-wrap gap-2">
+        <div class="flex items-center flex-wrap gap-2 w-full md:w-auto justify-start md:justify-end">
             <button onclick="openAddStudentModal()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition flex items-center gap-1.5">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>+ Siswa</span>
+                <i class="fa-solid fa-user-plus"></i><span class="hidden sm:inline">Siswa</span>
+            </button>
+            <button onclick="openBulkStudentModal()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-violet-600 text-white hover:bg-violet-700 shadow-sm transition flex items-center gap-1.5">
+                <i class="fa-solid fa-users"></i><span class="hidden sm:inline">Massal</span>
             </button>
             <button onclick="openAddClassModal()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm transition flex items-center gap-1.5">
-                <i class="fa-solid fa-folder-plus"></i>
-                <span>+ Kelas</span>
+                <i class="fa-solid fa-folder-plus"></i><span class="hidden sm:inline">Kelas</span>
             </button>
-            <button onclick="exportDataJSON()" class="p-2.5 text-xs font-medium rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition" title="Ekspor Data (Backup JSON)">
+            <div class="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+            <button onclick="exportDataJSON()" class="p-2.5 text-xs font-medium rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition text-gray-600 dark:text-gray-300" title="Ekspor Data (Backup JSON)">
                 <i class="fa-solid fa-download"></i>
             </button>
-            <label class="p-2.5 text-xs font-medium rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition" title="Impor Data (Upload JSON)">
+            <label class="p-2.5 text-xs font-medium rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition text-gray-600 dark:text-gray-300" title="Impor Data (Upload JSON)">
                 <i class="fa-solid fa-upload"></i>
                 <input type="file" id="importJsonInput" accept=".json" onchange="importDataJSON(event)" class="hidden">
             </label>
-            <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition" title="Ganti Tema">
+            <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition text-gray-600 dark:text-gray-300" title="Ganti Tema">
                 <i class="fa-solid fa-moon dark:hidden"></i>
                 <i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i>
             </button>
@@ -59,48 +72,48 @@
     </header>
 
     <!-- Main Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-y-auto">
+    <main class="flex-1 w-full max-w-[1400px] mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-y-auto">
 
         <!-- Notification Banner -->
-        <div id="alertBox" class="col-span-12 hidden bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-800 dark:text-indigo-200 px-4 py-3 rounded-xl flex items-center justify-between text-sm shadow-sm transition-all">
-            <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-circle-info text-indigo-500"></i>
-                <span id="alertText">Pesan peringatan.</span>
+        <div id="alertBox" class="col-span-1 lg:col-span-12 hidden bg-indigo-50 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800 text-indigo-800 dark:text-indigo-200 px-4 py-3 rounded-xl items-center justify-between text-sm shadow-sm transition-all">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-circle-info text-indigo-500 text-lg"></i>
+                <span id="alertText" class="font-medium">Pesan peringatan.</span>
             </div>
-            <button onclick="hideAlert()" class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 font-bold">&times;</button>
+            <button onclick="hideAlert()" class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 font-bold p-1">&times;</button>
         </div>
 
         <!-- Kolom Kiri: Daftar Siswa Berdasarkan Kelas & Pengaturan Tautan -->
         <div class="lg:col-span-7 flex flex-col gap-6">
             
             <!-- Konfigurasi Tautan / Format Link per Kelas -->
-            <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col gap-3">
+            <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col gap-3 transition-colors duration-300">
                 <div class="flex justify-between items-center">
                     <h2 class="font-semibold text-sm flex items-center gap-2 text-gray-800 dark:text-gray-200">
-                        <i class="fa-solid fa-link text-indigo-500"></i> Pola Tautan Presensi / Kelas
+                        <i class="fa-solid fa-link text-indigo-500"></i> Pola Tautan Presensi Hadir
                     </h2>
-                    <button onclick="resetToDefaultData()" class="text-[11px] text-red-500 hover:underline flex items-center gap-1">
+                    <button onclick="resetToDefaultData()" class="text-[11px] text-red-500 hover:text-red-700 hover:underline flex items-center gap-1 transition">
                         <i class="fa-solid fa-rotate-left"></i> Reset Data Awal
                     </button>
                 </div>
-                <p class="text-xs text-gray-400">Masukkan tautan Google Forms/format umum. Gunakan placeholder <code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded text-indigo-500">{nama}</code> atau <code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded text-indigo-500">{nis}</code> untuk kustomisasi dinamis.</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Masukkan tautan Google Forms utama. Gunakan <code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded text-indigo-600 dark:text-indigo-400 font-mono">{nama}</code> atau <code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded text-indigo-600 dark:text-indigo-400 font-mono">{nis}</code> untuk kustomisasi per siswa.</p>
                 
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="text" id="globalLinkInput" placeholder="Contoh: https://docs.google.com/forms/.../entry.123={nama}&entry.456={nis}" class="flex-1 p-2.5 text-xs rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
-                    <button onclick="applyGlobalLink()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition whitespace-nowrap">Terapkan Kelas Ini</button>
+                <div class="flex flex-col sm:flex-row gap-2 mt-1">
+                    <input type="text" id="globalLinkInput" placeholder="https://docs.google.com/forms/.../entry.123={nama}&entry.456={nis}" class="flex-1 p-2.5 text-xs rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition-all dark:text-white">
+                    <button onclick="applyGlobalLink()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition whitespace-nowrap active:scale-95">Terapkan ke Kelas Ini</button>
                 </div>
             </div>
 
             <!-- Bagian Pemilihan Siswa Per Kelas -->
-            <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col gap-4 flex-1">
+            <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col gap-4 flex-1 transition-colors duration-300 min-h-[500px]">
                 
-                <div class="flex flex-wrap justify-between items-center gap-2 border-b border-gray-100 dark:border-gray-700 pb-3">
-                    <h2 class="font-semibold text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-users text-indigo-500"></i> Direktori Siswa & Klasifikasi Kelas
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-gray-100 dark:border-gray-700 pb-3">
+                    <h2 class="font-semibold text-sm flex items-center gap-2 text-gray-800 dark:text-gray-200">
+                        <i class="fa-solid fa-users-viewfinder text-indigo-500"></i> Direktori Siswa
                     </h2>
-                    <div class="flex items-center gap-2">
-                        <button onclick="selectAll(true)" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">Pilih Semua</button>
-                        <button onclick="selectAll(false)" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">Batalkan</button>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <button onclick="selectAll(true)" class="flex-1 sm:flex-none px-3 py-1.5 text-xs font-medium rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition">Pilih Semua</button>
+                        <button onclick="selectAll(false)" class="flex-1 sm:flex-none px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition">Batalkan</button>
                     </div>
                 </div>
 
@@ -110,60 +123,106 @@
                 </div>
 
                 <!-- Filter & Search Bar -->
-                <div class="relative">
+                <div class="relative mt-2">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-xs text-gray-400"></i>
-                    <input type="text" id="searchInput" oninput="renderStudentList()" placeholder="Cari nama, NIS, atau NISN siswa..." class="w-full pl-8 pr-3 py-2 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                    <input type="text" id="searchInput" oninput="renderStudentList()" placeholder="Cari berdasarkan nama, NIS, atau NISN..." class="w-full pl-8 pr-3 py-2.5 text-xs rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition-all dark:text-white shadow-inner">
                 </div>
 
                 <!-- Kontainer Info Daftar Siswa -->
-                <div class="flex justify-between items-center text-xs text-gray-500 px-1">
-                    <span id="activeClassTitle" class="font-bold text-gray-700 dark:text-gray-300">Kelas XA</span>
-                    <span id="classSelectedCount">0 terpilih di kelas ini</span>
+                <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 px-1 mt-1">
+                    <span id="activeClassTitle" class="font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md">Pilih Kelas</span>
+                    <span id="classSelectedCount" class="font-medium">0 terpilih di kelas ini</span>
                 </div>
 
                 <!-- Scrollable Student List -->
-                <div id="studentListContainer" class="min-h-[260px] max-h-[380px] overflow-y-auto border border-gray-100 dark:border-gray-700 rounded-xl p-3 bg-gray-50/50 dark:bg-gray-900/50 flex flex-col gap-2">
+                <div id="studentListContainer" class="flex-1 overflow-y-auto border border-gray-100 dark:border-gray-700 rounded-xl p-3 bg-gray-50/50 dark:bg-gray-900/30 flex flex-col gap-2">
                     <!-- Dinamis via JS -->
                 </div>
             </div>
 
         </div>
 
-        <!-- Kolom Kanan: Hasil Kumpulan Tautan & Aksi Massal -->
+        <!-- Kolom Kanan: Menu Presensi Khusus & Hasil Tautan -->
         <div class="lg:col-span-5 flex flex-col gap-6">
             
-            <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col gap-4 flex-1 justify-between">
-                <div>
+            <!-- Integrasi Kartu: Menu Presensi Khusus -->
+            <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col gap-4 transition-colors duration-300">
+                <div class="flex flex-col border-b border-gray-100 dark:border-gray-700 pb-3">
+                    <h2 class="font-semibold text-sm flex items-center gap-2 text-gray-800 dark:text-gray-200">
+                        <i class="fa-solid fa-circle-exclamation text-amber-500"></i> Menu Presensi Khusus
+                    </h2>
+                    <span class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Gunakan tautan di bawah ini untuk menginput presensi siswa yang tidak hadir secara langsung.</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- Tombol SAKIT -->
+                    <a href="https://forms.gle/c4dMAXtYNpahjm4F8" target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center justify-center gap-2 p-3 bg-blue-50 hover:bg-blue-500 text-blue-600 hover:text-white dark:bg-blue-900/20 dark:hover:bg-blue-600 dark:text-blue-400 dark:hover:text-white border border-blue-200 dark:border-blue-800 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md">
+                        <div class="bg-white dark:bg-gray-800 p-2 rounded-full group-hover:bg-blue-400 dark:group-hover:bg-blue-500 transition-colors">
+                            <i class="fa-solid fa-bed-pulse text-lg"></i>
+                        </div>
+                        <span class="text-xs font-bold tracking-wide">SAKIT</span>
+                    </a>
+                    
+                    <!-- Tombol IZIN -->
+                    <a href="https://forms.gle/sQYzvpgkqvaqeY1q6" target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center justify-center gap-2 p-3 bg-yellow-50 hover:bg-yellow-500 text-yellow-600 hover:text-white dark:bg-yellow-900/20 dark:hover:bg-yellow-600 dark:text-yellow-400 dark:hover:text-white border border-yellow-200 dark:border-yellow-800 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md">
+                        <div class="bg-white dark:bg-gray-800 p-2 rounded-full group-hover:bg-yellow-400 dark:group-hover:bg-yellow-500 transition-colors">
+                            <i class="fa-solid fa-envelope-open-text text-lg"></i>
+                        </div>
+                        <span class="text-xs font-bold tracking-wide">IZIN</span>
+                    </a>
+                    
+                    <!-- Tombol TERLAMBAT -->
+                    <a href="https://forms.gle/AGDTUVeq7MmFkSV38" target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center justify-center gap-2 p-3 bg-orange-50 hover:bg-orange-500 text-orange-600 hover:text-white dark:bg-orange-900/20 dark:hover:bg-orange-600 dark:text-orange-400 dark:hover:text-white border border-orange-200 dark:border-orange-800 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md">
+                        <div class="bg-white dark:bg-gray-800 p-2 rounded-full group-hover:bg-orange-400 dark:group-hover:bg-orange-500 transition-colors">
+                            <i class="fa-solid fa-person-running text-lg"></i>
+                        </div>
+                        <span class="text-xs font-bold tracking-wide">TERLAMBAT</span>
+                    </a>
+                    
+                    <!-- Tombol BOLOS -->
+                    <a href="https://forms.gle/XHoob5yMRTac19y9A" target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center justify-center gap-2 p-3 bg-red-50 hover:bg-red-500 text-red-600 hover:text-white dark:bg-red-900/20 dark:hover:bg-red-600 dark:text-red-400 dark:hover:text-white border border-red-200 dark:border-red-800 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md">
+                        <div class="bg-white dark:bg-gray-800 p-2 rounded-full group-hover:bg-red-400 dark:group-hover:bg-red-500 transition-colors">
+                            <i class="fa-solid fa-user-xmark text-lg"></i>
+                        </div>
+                        <span class="text-xs font-bold tracking-wide">BOLOS</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Kartu Hasil Tautan -->
+            <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col gap-4 flex-1 transition-colors duration-300">
+                <div class="flex-1 flex flex-col">
                     <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3">
-                        <h2 class="font-semibold text-sm flex items-center gap-2">
-                            <i class="fa-solid fa-clipboard-list text-indigo-500"></i> Hasil Kumpulan Tautan
+                        <h2 class="font-semibold text-sm flex items-center gap-2 text-gray-800 dark:text-gray-200">
+                            <i class="fa-solid fa-clipboard-list text-indigo-500"></i> Hasil Tautan Terkumpul
                         </h2>
-                        <span id="totalSelectedBadge" class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-full text-xs font-bold">0 Tautan</span>
+                        <span id="totalSelectedBadge" class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-3 py-1 rounded-full text-xs font-bold shadow-inner">0 Tautan</span>
                     </div>
 
-                    <p class="text-xs text-gray-400 my-3">Tautan presensi dari siswa yang dicentang akan terkumpul secara otomatis di bawah ini:</p>
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-3 mb-2">Tautan presensi dari siswa yang dicentang di semua kelas akan tergabung secara otomatis di sini:</p>
 
-                    <!-- Output Textarea / List Preview -->
-                    <textarea id="outputLinkArea" readonly rows="10" placeholder="Daftar tautan terkumpul akan muncul di sini..." class="w-full p-3.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:outline-none font-mono transition resize-none"></textarea>
+                    <!-- Output Textarea -->
+                    <textarea id="outputLinkArea" readonly rows="12" placeholder="Pilih siswa pada direktori sebelah kiri untuk memunculkan tautannya di sini..." class="w-full flex-1 min-h-[200px] p-3.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono transition resize-none shadow-inner"></textarea>
                 </div>
 
                 <!-- Statistik Ringkas -->
-                <div class="grid grid-cols-2 gap-3 p-3 bg-gray-50 dark:bg-gray-900/60 rounded-xl border border-gray-100 dark:border-gray-800 text-xs">
-                    <div>
-                        <span class="text-gray-400 block text-[10px]">Total Siswa Terdaftar:</span>
-                        <span id="statTotalStudents" class="font-bold text-gray-700 dark:text-gray-200">0</span>
+                <div class="grid grid-cols-2 gap-3 p-3 bg-gray-50 dark:bg-gray-900/60 rounded-xl border border-gray-100 dark:border-gray-800 text-xs mt-auto">
+                    <div class="flex flex-col">
+                        <span class="text-gray-400 dark:text-gray-500 text-[10px] uppercase font-bold tracking-wider">Total Siswa</span>
+                        <span id="statTotalStudents" class="font-bold text-gray-700 dark:text-gray-200 text-lg">0</span>
                     </div>
-                    <div>
-                        <span class="text-gray-400 block text-[10px]">Total Kelas:</span>
-                        <span id="statTotalClasses" class="font-bold text-gray-700 dark:text-gray-200">0</span>
+                    <div class="flex flex-col border-l border-gray-200 dark:border-gray-700 pl-3">
+                        <span class="text-gray-400 dark:text-gray-500 text-[10px] uppercase font-bold tracking-wider">Total Kelas</span>
+                        <span id="statTotalClasses" class="font-bold text-gray-700 dark:text-gray-200 text-lg">0</span>
                     </div>
                 </div>
 
-                <div class="flex flex-col gap-2 pt-2">
-                    <button onclick="processAndOpen()" class="w-full py-3 text-sm font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-500/20 transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-rocket"></i> Buka Semua Tautan Terpilih
+                <!-- Action Buttons -->
+                <div class="flex flex-col gap-2 pt-1">
+                    <button onclick="processAndOpen()" class="w-full py-3 text-sm font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
+                        <i class="fa-solid fa-rocket"></i> Buka Semua Tautan (Tab Baru)
                     </button>
-                    <button onclick="copyAllOutputLinks()" class="w-full py-2.5 text-sm font-medium rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition flex items-center justify-center gap-2">
+                    <button onclick="copyAllOutputLinks()" class="w-full py-2.5 text-sm font-medium rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
                         <i class="fa-regular fa-copy"></i> Salin Semua Tautan
                     </button>
                 </div>
@@ -174,11 +233,11 @@
     </main>
 
     <!-- Modal Tambah / Edit Siswa -->
-    <div id="studentModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col gap-4">
+    <div id="studentModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col gap-4 transform scale-95 transition-transform duration-300">
             <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3">
                 <h3 id="studentModalTitle" class="font-bold text-base text-gray-800 dark:text-gray-100">Tambah Siswa Baru</h3>
-                <button onclick="closeStudentModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-lg">&times;</button>
+                <button onclick="closeModal('studentModal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-lg transition-colors p-1"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <form id="studentForm" onsubmit="handleSaveStudent(event)" class="flex flex-col gap-3 text-xs">
@@ -186,764 +245,722 @@
                 <input type="hidden" id="editOriginalId">
 
                 <div>
-                    <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">Kelas Target</label>
-                    <select id="modalStudentClass" required class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        <!-- Populated dynamically -->
-                    </select>
+                    <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">Kelas Target <span class="text-red-500">*</span></label>
+                    <select id="modalStudentClass" required class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white"></select>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">NIS (ID Unik)</label>
-                        <input type="text" id="modalStudentId" required placeholder="Contoh: 260120" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">NIS (ID Unik) <span class="text-red-500">*</span></label>
+                        <input type="text" id="modalStudentId" required placeholder="Contoh: 260120" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white">
                     </div>
                     <div>
                         <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">NISN</label>
-                        <input type="text" id="modalStudentNisn" required placeholder="Contoh: 0105432109" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <input type="text" id="modalStudentNisn" placeholder="Opsional: 0105432109" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white">
                     </div>
                 </div>
 
                 <div>
-                    <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">Nama Lengkap Siswa</label>
-                    <input type="text" id="modalStudentName" required placeholder="Contoh: AHMAD FAUZI" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">Nama Lengkap Siswa <span class="text-red-500">*</span></label>
+                    <input type="text" id="modalStudentName" required placeholder="Contoh: AHMAD FAUZI" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white">
                 </div>
 
                 <div>
                     <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">Jenis Kelamin</label>
-                    <select id="modalStudentGender" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <select id="modalStudentGender" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white">
                         <option value="LAKI-LAKI">LAKI-LAKI</option>
                         <option value="PEREMPUAN">PEREMPUAN</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">Tautan Presensi (Opsional)</label>
-                    <input type="url" id="modalStudentLink" placeholder="Biarkan kosong untuk menggunakan tautan default kelas" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">Tautan Presensi Khusus (Opsional)</label>
+                    <input type="url" id="modalStudentLink" placeholder="Kosongkan agar memakai template kelas" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white">
                 </div>
 
-                <div class="flex justify-end gap-2 pt-3 border-t border-gray-100 dark:border-gray-700">
-                    <button type="button" onclick="closeStudentModal()" class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">Batal</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 font-semibold transition">Simpan Data</button>
+                <div class="flex justify-end gap-2 pt-3 border-t border-gray-100 dark:border-gray-700 mt-2">
+                    <button type="button" onclick="closeModal('studentModal')" class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition font-medium">Batal</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 font-semibold transition shadow-sm shadow-indigo-500/30">Simpan Data</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal Tambah Kelas -->
-    <div id="classModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col gap-4">
+    <!-- Modal Input Siswa Massal -->
+    <div id="bulkStudentModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-3xl w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col gap-4 transform scale-95 transition-transform duration-300">
             <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3">
-                <h3 class="font-bold text-base text-gray-800 dark:text-gray-100">Tambah Kelas Baru</h3>
-                <button onclick="closeClassModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-lg">&times;</button>
+                <div>
+                    <h3 class="font-bold text-base text-gray-800 dark:text-gray-100">Input Data Siswa Massal</h3>
+                    <p class="text-[11px] text-gray-400 mt-1">Masukkan banyak siswa sekaligus dengan format tabular.</p>
+                </div>
+                <button onclick="closeModal('bulkStudentModal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-lg transition p-1"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <form onsubmit="handleSaveClass(event)" class="flex flex-col gap-3 text-xs">
+            <div class="flex flex-col gap-3 text-xs">
                 <div>
-                    <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">Nama Kelas Baru</label>
-                    <input type="text" id="newClassNameInput" required placeholder="Contoh: Kelas XE atau Kelas XI-IPA 1" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1">Target Kelas</label>
+                    <select id="bulkStudentClass" class="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs focus:ring-2 focus:ring-violet-500 focus:outline-none dark:text-white"></select>
                 </div>
 
-                <div class="flex justify-end gap-2 pt-3 border-t border-gray-100 dark:border-gray-700">
-                    <button type="button" onclick="closeClassModal()" class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">Batal</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 font-semibold transition">Tambah Kelas</button>
+                <div class="bg-violet-50 dark:bg-violet-900/30 border border-violet-100 dark:border-violet-800 rounded-xl p-3 text-[11px] text-violet-800 dark:text-violet-200 shadow-inner">
+                    <b>Format:</b> satu siswa per baris. Gunakan pemisah Tab, Koma (,) atau Titik Koma (;). Urutan Kolom:<br>
+                    <code class="font-mono bg-white dark:bg-gray-900 px-1 py-0.5 rounded border border-violet-100 dark:border-violet-700 inline-block mt-1">NIS [TAB] NISN [TAB] NAMA LENGKAP [TAB] JENIS KELAMIN</code><br>
+                    <span class="text-violet-600 dark:text-violet-300 mt-1 block">*Bisa langsung copy-paste dari Excel atau Google Sheets.</span>
+                </div>
+
+                <textarea id="bulkStudentData" rows="10" spellcheck="false" placeholder="Contoh Data:&#10;260120&#9;0101234567&#9;AHMAD FAUZI&#9;LAKI-LAKI&#10;260121&#9;0101234568&#9;SITI AISYAH&#9;PEREMPUAN" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs font-mono focus:ring-2 focus:ring-violet-500 focus:outline-none resize-y dark:text-white shadow-inner"></textarea>
+
+                <div class="flex items-center justify-between gap-2 mt-2">
+                    <button type="button" onclick="fillBulkExample()" class="px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition font-medium flex items-center gap-1">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Contoh Format
+                    </button>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="closeModal('bulkStudentModal')" class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition font-medium">Batal</button>
+                        <button type="button" onclick="handleBulkSaveStudents()" class="px-5 py-2 rounded-xl bg-violet-600 text-white hover:bg-violet-700 font-semibold transition shadow-sm shadow-violet-500/30">
+                            Simpan Massal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Kelas -->
+    <div id="classModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col gap-4 transform scale-95 transition-transform duration-300">
+            <div class="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3">
+                <h3 class="font-bold text-base text-gray-800 dark:text-gray-100">Buat Kelas Baru</h3>
+                <button onclick="closeModal('classModal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-lg transition p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form onsubmit="handleSaveClass(event)" class="flex flex-col gap-4 text-xs mt-1">
+                <div>
+                    <label class="font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Nama Kelas (Wajib Unik) <span class="text-red-500">*</span></label>
+                    <input type="text" id="newClassNameInput" required placeholder="Contoh: Kelas XII-MIPA 1" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:text-white">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('classModal')" class="px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition font-medium">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 font-semibold transition shadow-sm shadow-emerald-500/30">Tambah Kelas</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Modal Konfirmasi Hapus -->
-    <div id="confirmModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col gap-4 text-center">
-            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto text-xl">
+    <div id="confirmModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col gap-4 text-center transform scale-95 transition-transform duration-300">
+            <div class="w-14 h-14 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto text-2xl mb-1 shadow-inner">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
-            <h3 id="confirmTitle" class="font-bold text-base text-gray-800 dark:text-gray-100">Konfirmasi Hapus</h3>
-            <p id="confirmMessage" class="text-xs text-gray-500 dark:text-gray-400">Apakah Anda yakin ingin menghapus data ini?</p>
+            <h3 id="confirmTitle" class="font-bold text-lg text-gray-800 dark:text-gray-100">Konfirmasi Hapus</h3>
+            <p id="confirmMessage" class="text-sm text-gray-500 dark:text-gray-400 px-2">Apakah Anda yakin ingin menghapus data ini? Aksi ini tidak dapat dikembalikan.</p>
 
-            <div class="flex justify-center gap-3 pt-2">
-                <button onclick="closeConfirmModal()" class="px-4 py-2 text-xs rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">Batal</button>
-                <button id="confirmExecuteBtn" class="px-4 py-2 text-xs rounded-xl bg-red-600 text-white hover:bg-red-700 font-semibold transition">Ya, Hapus</button>
+            <div class="flex justify-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-700 mt-2">
+                <button onclick="closeModal('confirmModal')" class="px-5 py-2.5 text-sm rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition font-medium">Batal</button>
+                <button id="confirmExecuteBtn" class="px-5 py-2.5 text-sm rounded-xl bg-red-600 text-white hover:bg-red-700 font-bold transition shadow-sm shadow-red-500/30">Ya, Hapus Permanen</button>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="text-center py-4 text-xs text-gray-400 dark:text-gray-500 border-t border-gray-200 dark:border-gray-700">
-        Presensi Kehadiran SMAN 2 Nusa &bull; Sistem Pengelola Data & Tautan Siswa
+    <footer class="text-center py-5 text-[11px] font-medium tracking-wide text-gray-400 dark:text-gray-500 border-t border-gray-200 dark:border-gray-700">
+        &copy; 2026 Sistem Pengelola Data & Tautan SMAN 2 Nusa &bull; Semua Hak Dilindungi
     </footer>
 
-    <!-- Script Logika Aplikasi -->
     <script>
+        // State Management
+        let appData = {};
+        let activeClass = '';
+        let searchQuery = '';
+
+        // Default Seed Data
         const initialSchoolData = {
             "Kelas XA": [
-                { id: "260004", nisn: "0106148762", name: "ABDUL WAHIP", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ABDUL+WAHIP&entry.201529640=HS", selected: true },
-                { id: "260010", nisn: "0107923109", name: "ALFON AQUINO SAKA", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ALFON+AQUINO+SAKA&entry.201529640=HS", selected: false },
-                { id: "260012", nisn: "0105052057", name: "AMANDA PUTRI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=AMANDA+PUTRI&entry.201529640=HS", selected: false },
-                { id: "260017", nisn: "0118971241", name: "ARAYYA NUR ZAHIRA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ARAYYA+NUR+ZAHIRA&entry.201529640=HS", selected: true },
-                { id: "260019", nisn: "0105469341", name: "ARIL SAHRUL RAMADANI", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ARIL+SAHRUL+RAMADANI&entry.201529640=HS", selected: false },
-                { id: "260024", nisn: "097712728", name: "ELSYA APRILIA ANTHONY", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ELSYA+APRILIA+ANTHONY&entry.201529640=HS", selected: false },
-                { id: "260030", nisn: "0111628831", name: "FITRIANI XA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=FITRIANI+XA&entry.201529640=HS", selected: false },
-                { id: "260031", nisn: "0112035176", name: "HADIR JUMANSA PUTRA", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=HADIR+JUMANSA+PUTRA&entry.201529640=HS", selected: false },
-                { id: "260037", nisn: "0101869333", name: "IMAM AMROSI", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=IMAM+AMROSI&entry.201529640=HS", selected: false },
-                { id: "260039", nisn: "0115027428", name: "INDIAN ILYANDA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=INDIAN+ILYANDA&entry.201529640=HS", selected: false },
-                { id: "260046", nisn: "0117832504", name: "KIRANA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=KIRANA&entry.201529640=HS", selected: false },
-                { id: "260049", nisn: "0101496080", name: "MHD. ISWANDI", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MHD.+ISWANDI&entry.201529640=HS", selected: false },
-                { id: "260053", nisn: "0103877484", name: "MUH. ALBAR", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUH.+ALBAR&entry.201529640=HS", selected: true },
-                { id: "260057", nisn: "0102802885", name: "MUHAMMAD FADLI ADRIANO", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+FADLI+ADRIANO&entry.201529640=HS", selected: false },
-                { id: "260061", nisn: "0118519658", name: "MUHAMMAD ISRA SYAHPUTRA", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+ISRA+SYAHPUTRA&entry.201529640=HS", selected: false },
-                { id: "260065", nisn: "0101834198", name: "MUHAMMAD RESA SAPUTRA", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+RESA+SAPUTRA&entry.201529640=HS", selected: false },
-                { id: "260069", nisn: "0105715277", name: "MUHAMMAD WILDAN", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+WILDAN&entry.201529640=HS", selected: false },
-                { id: "260072", nisn: "0098401328", name: "NADA KAMELIA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NADA+KAMELIA&entry.201529640=HS", selected: true },
-                { id: "260076", nisn: "0108527238", name: "NOVIANA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NOVIANA&entry.201529640=HS", selected: true },
-                { id: "260080", nisn: "0111176983", name: "NUR VEBRIANI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NUR+VEBRIANI&entry.201529640=HS", selected: false },
-                { id: "260084", nisn: "0107839346", name: "NURHIKMAH ABDI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NURHIKMAH+ABDI&entry.201529640=HS", selected: true },
-                { id: "260090", nisn: "0104278399", name: "RASTI PRITA ANDINI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=RASTI+PRITA+ANDINI&entry.201529640=HS", selected: true },
-                { id: "260092", nisn: "0107010100", name: "REFAN", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=REFAN&entry.201529640=HS", selected: true },
-                { id: "260098", nisn: "0111191658", name: "REZKY AFANDY", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=REZKY+AFANDY&entry.201529640=HS", selected: false },
-                { id: "260101", nisn: "0109392495", name: "SAMSINAR", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=SAMSINAR&entry.201529640=HS", selected: true },
-                { id: "260105", nisn: "0123968886", name: "SITI SAILAH SAPUTRI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=SITI+SAILAH+SAPUTRI&entry.201529640=HS", selected: true },
-                { id: "260109", nisn: "0104154107", name: "SYAHRUL RAMADHANI", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=SYAHRUL+RAMADHANI&entry.201529640=HS", selected: false },
-                { id: "260110", nisn: "0116564777", name: "WA ODE NURTADALIA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=WA+ODE+NURTADAHLIA&entry.201529640=HS", selected: false },
-                { id: "260114", nisn: "0101000649", name: "YAFFA ALENA FAAIZA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=YAFFA+ALENA+FAAIZA&entry.201529640=HS", selected: false },
-                { id: "260116", nisn: "0104888082", name: "YUNITA HALIMATUN SYA'DIAH", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=YUNITA+HALIMATUN+SYA'DIAH&entry.201529640=HS", selected: false }
+                { id: "260004", nisn: "0106148762", name: "ABDUL WAHIP", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ABDUL+WAHIP", selected: false },
+                { id: "260010", nisn: "0107923109", name: "ALFON AQUINO SAKA", gender: "LAKI-LAKI", link: "", selected: false },
+                { id: "260012", nisn: "0105052057", name: "AMANDA PUTRI", gender: "PEREMPUAN", link: "", selected: false },
+                { id: "260017", nisn: "0118971241", name: "ARAYYA NUR ZAHIRA", gender: "PEREMPUAN", link: "", selected: false }
             ],
             "Kelas XB": [
-                { id: "260005", nisn: "0102094669", name: "ADAM ALIF RAHMAN", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ADAM+ALIF+RAHMAN&entry.201529640=HS", selected: true },
-                { id: "260011", nisn: "0116883035", name: "ALI IRSAN", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ALI+IRSAN&entry.201529640=HS", selected: true },
-                { id: "260014", nisn: "0109930277", name: "ANDI NURHALIZAH", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ANDI+NURHALIZAH&entry.201529640=HS", selected: true },
-                { id: "260020", nisn: "0119525847", name: "BADAR IBADIN", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=BADAR+IBADIN&entry.201529640=HS", selected: true },
-                { id: "260021", nisn: "0117889037", name: "DINDA KIRANA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=DINDA+KIRANA&entry.201529640=HS", selected: true },
-                { id: "260025", nisn: "0109248575", name: "ERNI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ERNI&entry.201529640=HS", selected: true },
-                { id: "260032", nisn: "0116390313", name: "HAJRIYANA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=HAJRIYANA&entry.201529640=HS", selected: false },
-                { id: "260033", nisn: "0103097316", name: "HERUL AGUSTIAN", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=HERUL+AGUSTIAN&entry.201529640=HS", selected: false },
-                { id: "260040", nisn: "0112728658", name: "INTAN BATRISYIA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=INTAN+BATRISYIA&entry.201529640=HS", selected: true },
-                { id: "260041", nisn: "0107422875", name: "IQBAL IRFANSA", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=IQBAL+IRFANSA&entry.201529640=HS", selected: true },
-                { id: "260047", nisn: "0106837618", name: "MARWAH SYAFITRI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MARWAH+SYAFITRI&entry.201529640=HS", selected: true },
-                { id: "260054", nisn: "0101515411", name: "MUH. UMARSYAM", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUH.+UMARSYAM&entry.201529640=HS", selected: false },
-                { id: "2600503", nisn: "100506286", name: "MOHAMMAD IRWAN", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MOHAMMAD+IRWAN&entry.201529640=HS", selected: false },
-                { id: "260058", nisn: "0111136908", name: "MUHAMMAD FHAYSAL SYUKUR AHMAD", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+FHAYSAL+SYUKUR+AHMAD&entry.201529640=HS", selected: false },
-                { id: "260062", nisn: "0106705459", name: "MUHAMMAD KARIM", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+KARIM&entry.201529640=HS", selected: true },
-                { id: "260066", nisn: "0104922371", name: "MUHAMMAD RIFQI", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+RIFQI&entry.201529640=HS", selected: true },
-                { id: "260073", nisn: "0106033650", name: "NANDA ERISKA LIHU", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NANDA+ERISKA+LIHU&entry.201529640=HS", selected: true },
-                { id: "260070", nisn: "0104388826", name: "MULTAZAM NISYAM", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MULTAZAM+NISYAM&entry.201529640=HS", selected: true },
-                { id: "260077", nisn: "0109625541", name: "NUR ANISA RAMADAN", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NUR+ANISA+RAMADAN&entry.201529640=HS", selected: false },
-                { id: "260081", nisn: "0116968436", name: "NURAIRAH", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NURAIRAH&entry.201529640=HS", selected: true },
-                { id: "260085", nisn: "0113740296", name: "NURUL SAFIKAH", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NURUL+SAFIKAH&entry.201529640=HS", selected: true },
-                { id: "260091", nisn: "0117058653", name: "RATU RAMAYANA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=RATU+RAMAYANA&entry.201529640=HS", selected: true },
-                { id: "260093", nisn: "0104116976", name: "REIVAN ARADILA", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=REIVAN+ARADILA&entry.201529640=HS", selected: true },
-                { id: "260099", nisn: "0104428616", name: "RIFALDI", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=RIFALDI&entry.201529640=HS", selected: false },
-                { id: "2601023", nisn: "114740852", name: "SASKIA AMANDA WULANDARI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=SASKIA+AMANDA+WULANDARI&entry.201529640=HS", selected: true },
-                { id: "260106", nisn: "0119225802", name: "SITY NUR CAHYA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=SITY+NUR+CAHYA&entry.201529640=HS", selected: true },
-                { id: "2601113", nisn: "112662330", name: "WAFRI THALITA ZAINUN", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=WAFRI+THALITA+ZAINUN&entry.201529640=HS", selected: false },
-                { id: "260115", nisn: "0103410698", name: "YOFARNO YOSAFAI RATU LUBUR", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=YOFARNO+YOSAFAI+RATU+LUBUR&entry.201529640=HS", selected: false }
-            ],
-            "Kelas XC": [
-                { id: "260003", nisn: "0116790414", name: "A. NURFARIDAH", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=A.+NURFARIDAH&entry.201529640=HS", selected: true },
-                { id: "260006", nisn: "3111658883", name: "AFIKA ADELIA SIREGAR", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=AFIKA+ADELIA+SIREGAR&entry.201529640=HS", selected: true },
-                { id: "260008", nisn: "0115123543", name: "AHMAD ANGGA", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=AHMAD+ANGGA&entry.201529640=HS", selected: true },
-                { id: "260013", nisn: "0119993291", name: "AMMAR FAIQ HAWRIEL ADNAN", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=AMMAR+FAIQ+HAWRIEL+ADNAN&entry.201529640=HS", selected: true },
-                { id: "260015", nisn: "0113593653", name: "ANDI NURUL SHAZIRAWATI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ANDI+NURUL+SHAZIRAWATI&entry.201529640=HS", selected: true },
-                { id: "260022", nisn: "0115190109", name: "EGY DESTRI AMALIA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=EGY+DESTRI+AMALIA&entry.201529640=HS", selected: true },
-                { id: "260026", nisn: "0107565355", name: "FALDIANZAH TAUFIK NUR HIDAYAH", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=FALDIANZAH+TAUFIK+NUR+HIDAYAH&entry.201529640=HS", selected: true },
-                { id: "260027", nisn: "0107224310", name: "FAUZIAH", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=FAUZIAH&entry.201529640=HS", selected: true },
-                { id: "260034", nisn: "0115714284", name: "HIJRIYANI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=HIJRIYANI&entry.201529640=HS", selected: true },
-                { id: "260035", nisn: "0118616933", name: "HIKMAL MARUDDANI", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=HIKMAL+MARUDDANI&entry.201529640=HS", selected: true },
-                { id: "260042", nisn: "0111180220", name: "IZMI AULIA ARHAM", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=IZMI+AULIA+ARHAM&entry.201529640=HS", selected: true },
-                { id: "260043", nisn: "0102119722", name: "KAKA ARBI GILARDI", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=KAKA+ARBI+GILARDI&entry.201529640=HS", selected: true },
-                { id: "260048", nisn: "0105220301", name: "MARWANI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MARWANI&entry.201529640=HS", selected: true },
-                { id: "260051", nisn: "0101797683", name: "MOHAMMAD REZA R. LIHU", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MOHAMMAD+REZA+R.+LIHU&entry.201529640=HS", selected: true },
-                { id: "260055", nisn: "0105499299", name: "MUHAMMAD AIDIL", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+AIDIL&entry.201529640=HS", selected: true },
-                { id: "260059", nisn: "0107742019", name: "MUHAMMAD FIKRAM", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+FIKRAM&entry.201529640=HS", selected: true },
-                { id: "260063", nisn: "0107664477", name: "MUHAMMAD RAMADHAN", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+RAMADHAN&entry.201529640=HS", selected: true },
-                { id: "260067", nisn: "0109751609", name: "MUHAMMAD SYAFIAN MONE", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+SYAFIAN+MONE&entry.201529640=HS", selected: true },
-                { id: "260074", nisn: "0111950492", name: "NIDHIFAH NAYLAH SAPUTRY", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NIDHIFAH+NAYLAH+SAPUTRY&entry.201529640=HS", selected: true },
-                { id: "260078", nisn: "0111695633", name: "NUR HAFIZA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NUR+HAFIZA&entry.201529640=HS", selected: true },
-                { id: "260082", nisn: "0103516333", name: "NURFADILA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NURFADILA&entry.201529640=HS", selected: true },
-                { id: "260086", nisn: "095554229", name: "PUTRI ANGRENI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=PUTRI+ANGRENI&entry.201529640=HS", selected: true },
-                { id: "260088", nisn: "0105946200", name: "RAHMAT REZKY HIDAYAT", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=RAHMAT+REZKY+HIDAYAT&entry.201529640=HS", selected: true },
-                { id: "2600943", nisn: "112122465", name: "REIZA HAMZAH", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=REIZA+HAMZAH&entry.201529640=HS", selected: true },
-                { id: "260095", nisn: "0102337788", name: "RENITA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=RENITA&entry.201529640=HS", selected: true },
-                { id: "260107", nisn: "0119619702", name: "ST.RAHMAH", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ST.RAHMAH&entry.201529640=HS", selected: true },
-                { id: "260103", nisn: "0104451032", name: "SEKAR WANGI RAHMADINI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=SEKAR+WANGI+RAHMADINI&entry.201529640=HS", selected: true },
-                { id: "260112", nisn: "0107736381", name: "WANDA NOVI AULIA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=WANDA+NOVI+AULIA&entry.201529640=HS", selected: true }
-            ],
-            "Kelas XD": [
-                { id: "260007", nisn: "0108884814", name: "AFRAH FATHANIA PRABA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=AFRAH+FATHANIA+PRABA&entry.201529640=HS", selected: true },
-                { id: "260009", nisn: "0109166563", name: "AKBAR MAULANA", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=AKBAR+MAULANA&entry.201529640=HS", selected: true },
-                { id: "260016", nisn: "0111791555", name: "ANISA PUTRI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ANISA+PUTRI&entry.201529640=HS", selected: true },
-                { id: "260018", nisn: "0108722663", name: "ARHAM NURWAHID", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ARHAM+NURWAHID&entry.201529640=HS", selected: true },
-                { id: "260023", nisn: "0106033839", name: "ELSA HANDAYANI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ELSA+HANDAYANI&entry.201529640=HS", selected: true },
-                { id: "260028", nisn: "0116745293", name: "FEBRIANSYAH", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=FEBRIANSYAH&entry.201529640=HS", selected: true },
-                { id: "260029", nisn: "0108662406", name: "FITRIANI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=FITRIANI+X-D&entry.201529640=HS", selected: true },
-                { id: "260036", nisn: "0112586711", name: "ILMANSYAH", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ILMANSYAH&entry.201529640=HS", selected: true },
-                { id: "260038", nisn: "0107462839", name: "INDAYANI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=INDAYANI&entry.201529640=HS", selected: true },
-                { id: "260044", nisn: "0106940038", name: "KAKA IBRA GILARDI", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=KAKA+IBRA+GILARDI&entry.201529640=HS", selected: true },
-                { id: "2600453", nisn: "101143313", name: "KARMILA SYAHRINA SAPUTRI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=KARMILA+SYAHRINA+SAPUTRI&entry.201529640=HS", selected: false },
-                { id: "260052", nisn: "0105410277", name: "MUH AIDIN ROIHAN AL FURQAN", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUH+AIDIN+ROIHAN+AL+FURQAN&entry.201529640=HS", selected: true },
-                { id: "260056", nisn: "0111414121", name: "MUHAMMAD ARDIANSYAH", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+ARDIANSYAH&entry.201529640=HS", selected: true },
-                { id: "260060", nisn: "0118399845", name: "MUHAMMAD IQBAL MULIYADI", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+IQBAL+MULIYADI&entry.201529640=HS", selected: false },
-                { id: "260064", nisn: "0119799802", name: "MUHAMMAD REEFAN BASTIAN", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+REEFAN+BASTIAN&entry.201529640=HS", selected: true },
-                { id: "260068", nisn: "0108012631", name: "MUHAMMAD SYAFIQ", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUHAMMAD+SYAFIQ&entry.201529640=HS", selected: true },
-                { id: "260071", nisn: "0107544031", name: "MUSFIRA RAMADANI MARMAN", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=MUSFIRA+RAMADANI+MARMAN&entry.201529640=HS", selected: true },
-                { id: "260075", nisn: "0108546784", name: "NOVI AMELIA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NOVI+AMELIA&entry.201529640=HS", selected: true },
-                { id: "260079", nisn: "0105691485", name: "NUR HAISA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NUR+HAISA&entry.201529640=HS", selected: true },
-                { id: "260083", nisn: "0103802830", name: "NURHAFIZA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=NURHAFIZA&entry.201529640=HS", selected: true },
-                { id: "260087", nisn: "0101679788", name: "PUTRI NABILA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=PUTRI+NABILA&entry.201529640=HS", selected: true },
-                { id: "2600893", nisn: "084790876", name: "RASMAN RAM", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=RASMAN+RAM&entry.201529640=HS", selected: true },
-                { id: "260096", nisn: "0107266947", name: "REVARINDI TINDA", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=REVARINDI+TINDA&entry.201529640=HS", selected: true },
-                { id: "260097", nisn: "0109887410", name: "REZA AGUNGTAMA", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=REZA+AGUNGTAMA&entry.201529640=HS", selected: true },
-                { id: "2601003", nisn: "110853510", name: "RIZKI", gender: "LAKI-LAKI", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=RIZKI&entry.201529640=HS", selected: true },
-                { id: "260104", nisn: "0105182137", name: "SELVIA RAHMADANI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=SELVIA+RAHMADANI&entry.201529640=HS", selected: true },
-                { id: "260108", nisn: "0111290947", name: "SYAHRINI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=SYAHRINI&entry.201529640=HS", selected: true },
-                { id: "260113", nisn: "0106354045", name: "WULAN SAFITRI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=WULAN+SAFITRI&entry.201529640=HS", selected: true },
-                { id: "260117", nisn: "0104920937", name: "ZASKIA SULISTYAWATI", gender: "PEREMPUAN", link: "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url&entry.1687779044=ZASKIA+SULISTYAWATI&entry.201529640=HS", selected: true }
+                { id: "260005", nisn: "0102094669", name: "ADAM ALIF RAHMAN", gender: "LAKI-LAKI", link: "", selected: false },
+                { id: "260014", nisn: "0109930277", name: "ANDI NURHALIZAH", gender: "PEREMPUAN", link: "", selected: false },
+                { id: "260021", nisn: "0117889037", name: "DINDA KIRANA", gender: "PEREMPUAN", link: "", selected: false }
             ]
         };
 
-        let schoolData = {};
-        let selectedStudents = {};
-        let currentActiveClassName = '';
-        let pendingConfirmCallback = null;
-
-        // Dark Mode Toggle
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-        }
-
-        // Inisialisasi Data dari LocalStorage atau Data Bawaan
-        window.addEventListener('DOMContentLoaded', () => {
-            loadSchoolData();
-            renderClassTabs();
-            renderStudentList();
-            updateOutputLinks();
-            updateStatistics();
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            initDarkMode();
+            loadData();
+            updateUI();
         });
 
-        function loadSchoolData() {
-            const savedData = localStorage.getItem('sman2_presensi_data_v2');
-            if (savedData) {
-                try {
-                    schoolData = JSON.parse(savedData);
-                } catch (e) {
-                    schoolData = JSON.parse(JSON.stringify(initialSchoolData));
+        function loadData() {
+            try {
+                const stored = localStorage.getItem('presensiAppData');
+                if (stored) {
+                    appData = JSON.parse(stored);
+                } else {
+                    appData = JSON.parse(JSON.stringify(initialSchoolData)); // Deep copy
                 }
-            } else {
-                schoolData = JSON.parse(JSON.stringify(initialSchoolData));
-            }
-
-            const classKeys = Object.keys(schoolData);
-            if (classKeys.length > 0) {
-                if (!currentActiveClassName || !schoolData[currentActiveClassName]) {
-                    currentActiveClassName = classKeys[0];
+                const classes = Object.keys(appData);
+                if (classes.length > 0) {
+                    activeClass = classes[0];
                 }
-            } else {
-                currentActiveClassName = '';
+            } catch (e) {
+                console.error("Error loading data", e);
+                appData = JSON.parse(JSON.stringify(initialSchoolData));
             }
-
-            // Sync selections
-            selectedStudents = {};
-            Object.keys(schoolData).forEach(className => {
-                schoolData[className].forEach(student => {
-                    if (student.selected) {
-                        selectedStudents[student.id] = true;
-                    }
-                });
-            });
         }
 
-        function saveSchoolData() {
-            // Keep student.selected synced with selectedStudents map
-            Object.keys(schoolData).forEach(className => {
-                schoolData[className].forEach(student => {
-                    student.selected = !!selectedStudents[student.id];
-                });
-            });
-            localStorage.setItem('sman2_presensi_data_v2', JSON.stringify(schoolData));
-            updateStatistics();
+        function saveData() {
+            localStorage.setItem('presensiAppData', JSON.stringify(appData));
+            updateStats();
         }
 
         function resetToDefaultData() {
-            showConfirmModal(
-                'Reset Data Bawaan',
-                'Apakah Anda yakin ingin mengembalikan seluruh data siswa dan kelas ke data awal? Perubahan kustom Anda akan terhapus.',
-                () => {
-                    localStorage.removeItem('sman2_presensi_data_v2');
-                    loadSchoolData();
-                    renderClassTabs();
-                    renderStudentList();
-                    updateOutputLinks();
-                    showAlert('Data berhasil dikembalikan ke format awal.');
-                }
-            );
+            showConfirm("Reset Data Awal", "Apakah Anda yakin ingin menghapus semua perubahan dan mengembalikan ke data awal bawaan aplikasi?", () => {
+                appData = JSON.parse(JSON.stringify(initialSchoolData));
+                activeClass = Object.keys(appData)[0] || '';
+                saveData();
+                updateUI();
+                showAlert("Data berhasil direset ke pengaturan awal.");
+            });
+        }
+
+        function updateUI() {
+            renderClassTabs();
+            renderStudentList();
+            generateLinks();
+            updateStats();
         }
 
         function renderClassTabs() {
             const container = document.getElementById('classTabs');
-            let html = '';
+            container.innerHTML = '';
+            const classes = Object.keys(appData);
             
-            const classKeys = Object.keys(schoolData);
-            classKeys.forEach(className => {
-                const isActive = className === currentActiveClassName;
-                const btnClass = isActive 
-                    ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-500/20' 
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600';
-                
-                html += `
-                    <div class="inline-flex items-center rounded-xl overflow-hidden shadow-sm transition">
-                        <button onclick="switchClass('${className}')" class="px-3.5 py-1.5 text-xs font-semibold ${btnClass}">
-                            ${className} (${schoolData[className].length})
-                        </button>
-                        ${classKeys.length > 1 ? `
-                            <button onclick="askDeleteClass('${className}')" title="Hapus Kelas ${className}" class="px-2 py-1.5 text-xs ${isActive ? 'bg-indigo-700 text-white hover:bg-indigo-800' : 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-300 hover:bg-red-500 hover:text-white'}">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        ` : ''}
-                    </div>
+            if (classes.length === 0) {
+                container.innerHTML = `<span class="text-xs text-gray-500 italic">Tidak ada kelas. Silakan tambah kelas.</span>`;
+                return;
+            }
+
+            classes.forEach(cls => {
+                const isActive = cls === activeClass;
+                const btn = document.createElement('button');
+                btn.className = `px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 shadow-sm ${isActive ? 'bg-indigo-600 text-white shadow-indigo-500/30' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}`;
+                btn.innerHTML = `
+                    ${cls}
+                    ${isActive ? `<span onclick="deleteClass(event, '${cls}')" class="ml-2 text-indigo-200 hover:text-white transition cursor-pointer px-1">&times;</span>` : ''}
                 `;
+                btn.onclick = () => {
+                    activeClass = cls;
+                    document.getElementById('searchInput').value = '';
+                    searchQuery = '';
+                    updateUI();
+                };
+                container.appendChild(btn);
             });
-
-            container.innerHTML = html || '<span class="text-xs text-gray-400">Belum ada kelas. Silakan tambah kelas baru.</span>';
-        }
-
-        function switchClass(className) {
-            currentActiveClassName = className;
-            document.getElementById('activeClassTitle').textContent = `Kelas ${className}`;
-            renderClassTabs();
-            renderStudentList();
         }
 
         function renderStudentList() {
             const container = document.getElementById('studentListContainer');
-            const searchKeyword = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
-            const students = schoolData[currentActiveClassName] || [];
+            const titleEl = document.getElementById('activeClassTitle');
+            const countEl = document.getElementById('classSelectedCount');
             
-            let html = '';
-            let countSelectedInClass = 0;
-
-            const filteredStudents = students.filter(student => {
-                if (!searchKeyword) return true;
-                return student.name.toLowerCase().includes(searchKeyword) || 
-                       student.id.toLowerCase().includes(searchKeyword) ||
-                       student.nisn.toLowerCase().includes(searchKeyword);
-            });
-
-            if (filteredStudents.length === 0) {
-                container.innerHTML = `
-                    <div class="flex flex-col items-center justify-center p-8 text-center text-gray-400">
-                        <i class="fa-solid fa-folder-open text-3xl mb-2 text-gray-300 dark:text-gray-600"></i>
-                        <p class="text-xs font-medium">Tidak ada siswa ditemukan.</p>
-                        <button onclick="openAddStudentModal()" class="mt-2 text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">+ Tambah Siswa Ke Kelas Ini</button>
-                    </div>
-                `;
-                document.getElementById('classSelectedCount').textContent = `0 terpilih di kelas ini`;
+            searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (!activeClass || !appData[activeClass]) {
+                container.innerHTML = `<div class="text-center text-gray-400 text-xs py-8">Pilih atau buat kelas terlebih dahulu.</div>`;
+                titleEl.textContent = "Belum Ada Kelas";
+                countEl.textContent = "";
                 return;
             }
 
-            filteredStudents.forEach(student => {
-                const isChecked = selectedStudents[student.id] || false;
-                if (isChecked) countSelectedInClass++;
+            titleEl.textContent = activeClass;
+            container.innerHTML = '';
 
-                html += `
-                    <div class="flex items-center justify-between p-2.5 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 cursor-pointer transition gap-2">
-                        <label class="flex items-center space-x-3 flex-1 cursor-pointer min-w-0">
-                            <input type="checkbox" value="${student.id}" ${isChecked ? 'checked' : ''} onchange="toggleStudent('${student.id}')" class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 flex-shrink-0">
-                            <div class="truncate">
-                                <p class="text-xs font-bold text-gray-800 dark:text-gray-200 truncate">
-                                    ${student.name} 
-                                    <span class="font-normal text-[10px] text-gray-400">(${student.gender})</span>
-                                </p>
-                                <p class="text-[10px] text-gray-400 font-mono">NIS: ${student.id} &bull; NISN: ${student.nisn}</p>
-                            </div>
-                        </label>
-                        <div class="flex items-center space-x-1 flex-shrink-0">
-                            <span class="text-[10px] px-2 py-0.5 rounded-full ${isChecked ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300 font-semibold' : 'bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-400'}">
-                                ${isChecked ? 'Dipilih' : 'Tidak'}
+            let students = appData[activeClass];
+            
+            if (searchQuery) {
+                students = students.filter(s => 
+                    s.name.toLowerCase().includes(searchQuery) || 
+                    s.id.toLowerCase().includes(searchQuery) || 
+                    (s.nisn && s.nisn.toLowerCase().includes(searchQuery))
+                );
+            }
+
+            if (students.length === 0) {
+                container.innerHTML = `<div class="text-center text-gray-400 text-xs py-8">Tidak ada siswa ditemukan.</div>`;
+            }
+
+            let selectedInClass = 0;
+
+            students.forEach((s, index) => {
+                if (s.selected) selectedInClass++;
+                
+                const item = document.createElement('div');
+                item.className = `flex flex-col sm:flex-row justify-between sm:items-center p-3 rounded-xl border transition-all duration-200 ${s.selected ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-700 shadow-sm' : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'}`;
+                
+                item.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden cursor-pointer w-full sm:w-auto" onclick="toggleStudentSelection('${s.id}')">
+                        <div class="relative flex items-center">
+                            <input type="checkbox" ${s.selected ? 'checked' : ''} class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 pointer-events-none">
+                        </div>
+                        <div class="flex flex-col min-w-0">
+                            <span class="font-semibold text-xs text-gray-800 dark:text-gray-200 truncate ${s.selected ? 'text-indigo-700 dark:text-indigo-300' : ''}">${s.name}</span>
+                            <span class="text-[10px] text-gray-500 flex items-center gap-1.5 mt-0.5">
+                                <span class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded text-gray-600 dark:text-gray-400">${s.id}</span>
+                                ${s.gender === 'LAKI-LAKI' ? '<i class="fa-solid fa-mars text-blue-400" title="Laki-laki"></i>' : '<i class="fa-solid fa-venus text-pink-400" title="Perempuan"></i>'}
+                                ${s.link ? '<i class="fa-solid fa-link text-indigo-400 ml-1" title="Tautan kustom aktif"></i>' : ''}
                             </span>
-                            <button onclick="openEditStudentModal('${currentActiveClassName}', '${student.id}')" class="p-1.5 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-xs transition" title="Edit Data Siswa">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <button onclick="askDeleteStudent('${currentActiveClassName}', '${student.id}', '${student.name}')" class="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 text-xs transition" title="Hapus Siswa">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
                         </div>
                     </div>
+                    <div class="flex items-center gap-2 mt-2 sm:mt-0 justify-end w-full sm:w-auto pl-7 sm:pl-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-700 pt-2 sm:pt-0">
+                        <button onclick="editStudent('${s.id}')" class="p-1.5 text-gray-400 hover:text-indigo-500 transition" title="Edit Siswa"><i class="fa-solid fa-pen text-xs"></i></button>
+                        <button onclick="deleteStudent('${s.id}')" class="p-1.5 text-gray-400 hover:text-red-500 transition" title="Hapus Siswa"><i class="fa-solid fa-trash text-xs"></i></button>
+                    </div>
                 `;
+                container.appendChild(item);
             });
 
-            container.innerHTML = html;
-            document.getElementById('classSelectedCount').textContent = `${countSelectedInClass} terpilih di kelas ini`;
+            countEl.textContent = `${selectedInClass} terpilih dari ${appData[activeClass].length}`;
+            
+            // Generate Links automatically when rendering updates selections
+            generateLinks();
         }
 
-        function toggleStudent(studentId) {
-            selectedStudents[studentId] = !selectedStudents[studentId];
-            saveSchoolData();
-            renderStudentList();
-            updateOutputLinks();
+        function toggleStudentSelection(studentId) {
+            if(!appData[activeClass]) return;
+            const student = appData[activeClass].find(s => s.id === studentId);
+            if (student) {
+                student.selected = !student.selected;
+                saveData();
+                renderStudentList();
+            }
         }
 
-        function selectAll(status) {
-            const students = schoolData[currentActiveClassName] || [];
-            students.forEach(student => {
-                selectedStudents[student.id] = status;
-            });
-            saveSchoolData();
+        function selectAll(check) {
+            if(!appData[activeClass]) return;
+            
+            // Only select/deselect visible students if searching
+            let targetStudents = appData[activeClass];
+            if (searchQuery) {
+                targetStudents = targetStudents.filter(s => 
+                    s.name.toLowerCase().includes(searchQuery) || 
+                    s.id.toLowerCase().includes(searchQuery)
+                );
+            }
+
+            targetStudents.forEach(s => s.selected = check);
+            saveData();
             renderStudentList();
-            updateOutputLinks();
+        }
+
+        function getStudentLink(student) {
+            // Use custom link if exists, otherwise try to generate from global config
+            if (student.link && student.link.trim() !== '') {
+                return student.link;
+            }
+            
+            const globalLink = document.getElementById('globalLinkInput').value.trim();
+            if (globalLink) {
+                let generatedLink = globalLink
+                    .replace(/{nama}/g, encodeURIComponent(student.name))
+                    .replace(/{nis}/g, encodeURIComponent(student.id));
+                return generatedLink;
+            }
+            
+            return `[Tautan Belum Diatur] - ${student.name}`;
         }
 
         function applyGlobalLink() {
-            const customUrl = document.getElementById('globalLinkInput').value.trim();
-            if (!customUrl) {
-                showAlert('Masukkan tautan terlebih dahulu pada kotak konfigurasi.');
+            const input = document.getElementById('globalLinkInput').value;
+            if (!input) {
+                showAlert("Masukkan format tautan terlebih dahulu!");
                 return;
             }
-
-            const students = schoolData[currentActiveClassName] || [];
-            students.forEach(student => {
-                let formatted = customUrl;
-                if (formatted.includes('{nama}')) {
-                    formatted = formatted.replace(/{nama}/g, encodeURIComponent(student.name));
-                }
-                if (formatted.includes('{nis}')) {
-                    formatted = formatted.replace(/{nis}/g, student.id);
-                }
-                student.link = formatted;
+            if(!appData[activeClass]) return;
+            
+            // Overwrite all custom links in active class with empty to force using global link logic
+            // or we could embed the generated link directly. Let's embed directly for portability.
+            appData[activeClass].forEach(s => {
+                s.link = input
+                    .replace(/{nama}/g, encodeURIComponent(s.name))
+                    .replace(/{nis}/g, encodeURIComponent(s.id));
             });
-
-            saveSchoolData();
+            
+            saveData();
             renderStudentList();
-            updateOutputLinks();
-            showAlert(`Tautan untuk ${currentActiveClassName} berhasil diperbarui!`);
+            showAlert(`Tautan global berhasil diterapkan ke seluruh siswa di ${activeClass}.`);
         }
 
-        function updateOutputLinks() {
-            let collectedLinks = [];
-
-            Object.keys(schoolData).forEach(className => {
-                schoolData[className].forEach(student => {
-                    if (selectedStudents[student.id]) {
-                        collectedLinks.push(student.link || generateDefaultStudentLink(student.name));
+        function generateLinks() {
+            const area = document.getElementById('outputLinkArea');
+            const badge = document.getElementById('totalSelectedBadge');
+            
+            let links = [];
+            
+            // Gather selected students across ALL classes (or just active? Usually all classes for bulk generation)
+            for (const cls in appData) {
+                appData[cls].forEach(s => {
+                    if (s.selected) {
+                        links.push(getStudentLink(s));
                     }
                 });
-            });
+            }
 
-            document.getElementById('outputLinkArea').value = collectedLinks.join('\n');
-            document.getElementById('totalSelectedBadge').textContent = `${collectedLinks.length} Tautan`;
-        }
-
-        function generateDefaultStudentLink(name) {
-            const baseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdnsta25s_bhWUMKMcf86QdHcAT1zAOFqKdB6GkKlLyaFErcw/formResponse?usp=pp_url";
-            return `${baseUrl}&entry.1687779044=${encodeURIComponent(name)}&entry.201529640=HS`;
-        }
-
-        function updateStatistics() {
-            let totalStudents = 0;
-            const classKeys = Object.keys(schoolData);
+            if (links.length > 0) {
+                area.value = links.join('\n');
+            } else {
+                area.value = '';
+            }
             
-            classKeys.forEach(c => {
-                totalStudents += schoolData[c].length;
-            });
-
-            document.getElementById('statTotalStudents').textContent = totalStudents;
-            document.getElementById('statTotalClasses').textContent = classKeys.length;
+            badge.textContent = `${links.length} Tautan`;
         }
 
-        function populateClassDropdown(selectedClass) {
-            const select = document.getElementById('modalStudentClass');
+        function processAndOpen() {
+            const area = document.getElementById('outputLinkArea');
+            const links = area.value.split('\n').filter(l => l.trim() !== '' && l.startsWith('http'));
+            
+            if (links.length === 0) {
+                showAlert("Tidak ada tautan valid yang dipilih untuk dibuka.");
+                return;
+            }
+            if (links.length > 20) {
+                showConfirm("Buka Banyak Tab", `Anda akan membuka ${links.length} tab sekaligus. Ini bisa membuat peramban berat/terblokir pop-up blocker. Lanjutkan?`, () => {
+                    links.forEach(l => window.open(l.trim(), '_blank'));
+                });
+                return;
+            }
+            
+            links.forEach(l => window.open(l.trim(), '_blank'));
+        }
+
+        function copyAllOutputLinks() {
+            const area = document.getElementById('outputLinkArea');
+            if (!area.value.trim()) {
+                showAlert("Tidak ada tautan untuk disalin.");
+                return;
+            }
+            area.select();
+            document.execCommand('copy');
+            showAlert("Semua tautan berhasil disalin ke clipboard!");
+        }
+
+        function updateStats() {
+            let totalStu = 0;
+            let totalCls = Object.keys(appData).length;
+            
+            for(const cls in appData){
+                totalStu += appData[cls].length;
+            }
+            
+            document.getElementById('statTotalStudents').textContent = totalStu;
+            document.getElementById('statTotalClasses').textContent = totalCls;
+        }
+
+        // Helper Modals
+        function openModal(id) {
+            const m = document.getElementById(id);
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+            // Small timeout to allow display:flex to apply before opacity transition
+            setTimeout(() => {
+                m.classList.remove('opacity-0');
+                m.querySelector('div').classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeModal(id) {
+            const m = document.getElementById(id);
+            m.classList.add('opacity-0');
+            m.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                m.classList.add('hidden');
+                m.classList.remove('flex');
+            }, 300); // match duration-300
+        }
+
+        function populateClassDropdown(selectId) {
+            const select = document.getElementById(selectId);
             select.innerHTML = '';
-            Object.keys(schoolData).forEach(c => {
+            Object.keys(appData).forEach(cls => {
                 const opt = document.createElement('option');
-                opt.value = c;
-                opt.textContent = c;
-                if (c === selectedClass) opt.selected = true;
+                opt.value = cls;
+                opt.textContent = cls;
+                if(cls === activeClass) opt.selected = true;
                 select.appendChild(opt);
             });
         }
 
-        function openAddStudentModal() {
-            if (Object.keys(schoolData).length === 0) {
-                showAlert('Silakan buat kelas terlebih dahulu sebelum menambah siswa!');
-                return;
-            }
-            document.getElementById('studentModalTitle').textContent = 'Tambah Siswa Baru';
-            document.getElementById('editOriginalClass').value = '';
-            document.getElementById('editOriginalId').value = '';
-            document.getElementById('studentForm').reset();
-            
-            populateClassDropdown(currentActiveClassName);
-            document.getElementById('studentModal').classList.remove('hidden');
-        }
-
-        function openEditStudentModal(className, studentId) {
-            const student = (schoolData[className] || []).find(s => s.id === studentId);
-            if (!student) return;
-
-            document.getElementById('studentModalTitle').textContent = 'Edit Data Siswa';
-            document.getElementById('editOriginalClass').value = className;
-            document.getElementById('editOriginalId').value = studentId;
-
-            populateClassDropdown(className);
-            document.getElementById('modalStudentId').value = student.id;
-            document.getElementById('modalStudentNisn').value = student.nisn;
-            document.getElementById('modalStudentName').value = student.name;
-            document.getElementById('modalStudentGender').value = student.gender;
-            document.getElementById('modalStudentLink').value = student.link || '';
-
-            document.getElementById('studentModal').classList.remove('hidden');
-        }
-
-        function closeStudentModal() {
-            document.getElementById('studentModal').classList.add('hidden');
-        }
-
-        function handleSaveStudent(e) {
-            e.preventDefault();
-
-            const origClass = document.getElementById('editOriginalClass').value;
-            const origId = document.getElementById('editOriginalId').value;
-
-            const targetClass = document.getElementById('modalStudentClass').value;
-            const newId = document.getElementById('modalStudentId').value.trim();
-            const newNisn = document.getElementById('modalStudentNisn').value.trim();
-            const newName = document.getElementById('modalStudentName').value.trim().toUpperCase();
-            const newGender = document.getElementById('modalStudentGender').value;
-            let newLink = document.getElementById('modalStudentLink').value.trim();
-
-            if (!newLink) {
-                newLink = generateDefaultStudentLink(newName);
-            }
-
-            // Check duplicate ID if new or ID changed
-            let isDuplicate = false;
-            Object.keys(schoolData).forEach(c => {
-                schoolData[c].forEach(s => {
-                    if (s.id === newId && !(c === origClass && s.id === origId)) {
-                        isDuplicate = true;
-                    }
-                });
-            });
-
-            if (isDuplicate) {
-                showAlert('NIS/ID Siswa sudah digunakan oleh siswa lain! Gunakan NIS unik.');
-                return;
-            }
-
-            // If edit, remove old record
-            if (origClass && origId) {
-                const isSelectedPrev = selectedStudents[origId];
-                delete selectedStudents[origId];
-
-                schoolData[origClass] = schoolData[origClass].filter(s => s.id !== origId);
-                selectedStudents[newId] = isSelectedPrev !== undefined ? isSelectedPrev : true;
-            } else {
-                selectedStudents[newId] = true;
-            }
-
-            // Add new or updated student
-            const studentObj = {
-                id: newId,
-                nisn: newNisn,
-                name: newName,
-                gender: newGender,
-                link: newLink,
-                selected: selectedStudents[newId]
-            };
-
-            if (!schoolData[targetClass]) {
-                schoolData[targetClass] = [];
-            }
-            schoolData[targetClass].push(studentObj);
-
-            saveSchoolData();
-            currentActiveClassName = targetClass;
-            renderClassTabs();
-            renderStudentList();
-            updateOutputLinks();
-            closeStudentModal();
-            showAlert(`Data siswa "${newName}" berhasil disimpan.`);
-        }
-
+        // Class Actions
         function openAddClassModal() {
             document.getElementById('newClassNameInput').value = '';
-            document.getElementById('classModal').classList.remove('hidden');
-        }
-
-        function closeClassModal() {
-            document.getElementById('classModal').classList.add('hidden');
+            openModal('classModal');
+            setTimeout(() => document.getElementById('newClassNameInput').focus(), 100);
         }
 
         function handleSaveClass(e) {
             e.preventDefault();
-            const nameInput = document.getElementById('newClassNameInput').value.trim();
-            if (!nameInput) return;
-
-            let formattedClassName = nameInput.startsWith('Kelas') ? nameInput : `Kelas ${nameInput}`;
-
-            if (schoolData[formattedClassName]) {
-                showAlert(`Kelas dengan nama "${formattedClassName}" sudah ada!`);
-                return;
-            }
-
-            schoolData[formattedClassName] = [];
-            saveSchoolData();
-            currentActiveClassName = formattedClassName;
-            renderClassTabs();
-            renderStudentList();
-            closeClassModal();
-            showAlert(`Kelas "${formattedClassName}" berhasil ditambahkan.`);
-        }
-
-        function askDeleteStudent(className, studentId, studentName) {
-            showConfirmModal(
-                'Hapus Data Siswa',
-                `Apakah Anda yakin ingin menghapus data siswa "${studentName}" dari ${className}?`,
-                () => {
-                    schoolData[className] = schoolData[className].filter(s => s.id !== studentId);
-                    delete selectedStudents[studentId];
-                    saveSchoolData();
-                    renderStudentList();
-                    updateOutputLinks();
-                    showAlert(`Siswa "${studentName}" telah dihapus.`);
-                }
-            );
-        }
-
-        function askDeleteClass(className) {
-            showConfirmModal(
-                'Hapus Kelas',
-                `Apakah Anda yakin ingin menghapus seluruh ${className} beserta data seluruh siswanya?`,
-                () => {
-                    (schoolData[className] || []).forEach(s => delete selectedStudents[s.id]);
-                    delete schoolData[className];
-                    saveSchoolData();
-
-                    const remainingClasses = Object.keys(schoolData);
-                    currentActiveClassName = remainingClasses.length > 0 ? remainingClasses[0] : '';
-                    renderClassTabs();
-                    renderStudentList();
-                    updateOutputLinks();
-                    showAlert(`"${className}" telah dihapus.`);
-                }
-            );
-        }
-
-        function processAndOpen() {
-            const outputText = document.getElementById('outputLinkArea').value.trim();
-            if (!outputText) {
-                showAlert('Belum ada siswa yang dicentang atau tautan kosong!');
-                return;
-            }
-
-            const links = outputText.split('\n').filter(l => l.trim().length > 0);
+            const name = document.getElementById('newClassNameInput').value.trim();
+            if(!name) return;
             
-            let index = 0;
-            function openNext() {
-                if (index < links.length) {
-                    let formattedUrl = links[index];
-                    if (!/^https?:\/\//i.test(formattedUrl)) {
-                        formattedUrl = 'https://' + formattedUrl;
-                    }
-                    window.open(formattedUrl, '_blank');
-                    index++;
-                    setTimeout(openNext, 300);
-                }
-            }
-            openNext();
-        }
-
-        function copyAllOutputLinks() {
-            const outputText = document.getElementById('outputLinkArea').value;
-            if (!outputText) {
-                showAlert('Tidak ada tautan untuk disalin.');
+            if(appData[name]) {
+                showAlert("Kelas dengan nama tersebut sudah ada!");
                 return;
             }
-
-            copyLegacy(outputText);
+            
+            appData[name] = [];
+            activeClass = name;
+            saveData();
+            updateUI();
+            closeModal('classModal');
+            showAlert(`Kelas ${name} berhasil ditambahkan.`);
         }
 
-        function copyLegacy(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                showAlert('Semua tautan terkumpul berhasil disalin ke papan klip!');
-            } catch (err) {
-                showAlert('Gagal menyalin tautan.');
+        function deleteClass(e, className) {
+            e.stopPropagation();
+            showConfirm("Hapus Kelas", `Anda yakin ingin menghapus kelas <b>${className}</b> beserta seluruh siswa di dalamnya?`, () => {
+                delete appData[className];
+                const remaining = Object.keys(appData);
+                if (remaining.length > 0) activeClass = remaining[0];
+                else activeClass = '';
+                
+                saveData();
+                updateUI();
+            });
+        }
+
+        // Student Actions
+        function openAddStudentModal() {
+            if(Object.keys(appData).length === 0){
+                showAlert("Buat kelas terlebih dahulu sebelum menambah siswa.");
+                return;
             }
-            document.body.removeChild(textarea);
+            document.getElementById('studentModalTitle').textContent = "Tambah Siswa Baru";
+            document.getElementById('studentForm').reset();
+            document.getElementById('editOriginalClass').value = '';
+            document.getElementById('editOriginalId').value = '';
+            populateClassDropdown('modalStudentClass');
+            openModal('studentModal');
         }
 
+        function editStudent(studentId) {
+            if(!appData[activeClass]) return;
+            const student = appData[activeClass].find(s => s.id === studentId);
+            if(!student) return;
+
+            document.getElementById('studentModalTitle').textContent = "Edit Data Siswa";
+            populateClassDropdown('modalStudentClass');
+            
+            document.getElementById('modalStudentClass').value = activeClass;
+            document.getElementById('modalStudentId').value = student.id;
+            document.getElementById('modalStudentNisn').value = student.nisn || '';
+            document.getElementById('modalStudentName').value = student.name;
+            document.getElementById('modalStudentGender').value = student.gender;
+            document.getElementById('modalStudentLink').value = student.link || '';
+            
+            document.getElementById('editOriginalClass').value = activeClass;
+            document.getElementById('editOriginalId').value = student.id;
+            
+            openModal('studentModal');
+        }
+
+        function handleSaveStudent(e) {
+            e.preventDefault();
+            const targetCls = document.getElementById('modalStudentClass').value;
+            const sId = document.getElementById('modalStudentId').value.trim();
+            const sNisn = document.getElementById('modalStudentNisn').value.trim();
+            const sName = document.getElementById('modalStudentName').value.trim().toUpperCase();
+            const sGender = document.getElementById('modalStudentGender').value;
+            const sLink = document.getElementById('modalStudentLink').value.trim();
+            
+            const origCls = document.getElementById('editOriginalClass').value;
+            const origId = document.getElementById('editOriginalId').value;
+
+            // Validation ID exist
+            if(origId !== sId || origCls !== targetCls) {
+               if(appData[targetCls] && appData[targetCls].some(s => s.id === sId)){
+                   showAlert(`Siswa dengan NIS ${sId} sudah ada di kelas ${targetCls}!`);
+                   return;
+               }
+            }
+
+            const newStudentObj = {
+                id: sId, nisn: sNisn, name: sName, gender: sGender, link: sLink, selected: false
+            };
+
+            if (origId && origCls) {
+                // Editing existing
+                const idx = appData[origCls].findIndex(s => s.id === origId);
+                if(idx > -1) {
+                    newStudentObj.selected = appData[origCls][idx].selected; // preserve selection
+                    if (origCls === targetCls) {
+                        appData[origCls][idx] = newStudentObj;
+                    } else {
+                        appData[origCls].splice(idx, 1);
+                        if(!appData[targetCls]) appData[targetCls] = [];
+                        appData[targetCls].push(newStudentObj);
+                    }
+                }
+            } else {
+                // Adding new
+                if(!appData[targetCls]) appData[targetCls] = [];
+                appData[targetCls].push(newStudentObj);
+            }
+
+            // Sort by name
+            appData[targetCls].sort((a,b) => a.name.localeCompare(b.name));
+            
+            activeClass = targetCls;
+            saveData();
+            updateUI();
+            closeModal('studentModal');
+        }
+
+        function deleteStudent(studentId) {
+            showConfirm("Hapus Siswa", `Yakin ingin menghapus siswa dengan ID ${studentId}?`, () => {
+                if(appData[activeClass]){
+                    appData[activeClass] = appData[activeClass].filter(s => s.id !== studentId);
+                    saveData();
+                    renderStudentList();
+                }
+            });
+        }
+
+        function openBulkStudentModal() {
+            if(Object.keys(appData).length === 0){
+                showAlert("Buat kelas terlebih dahulu sebelum menambah siswa massal.");
+                return;
+            }
+            populateClassDropdown('bulkStudentClass');
+            document.getElementById('bulkStudentData').value = '';
+            openModal('bulkStudentModal');
+        }
+
+        function fillBulkExample() {
+            document.getElementById('bulkStudentData').value = 
+`260201\t0109988771\tJOHN DOE\tLAKI-LAKI
+260202\t0109988772\tJANE ROE\tPEREMPUAN
+260203\t0109988773\tBUDI SANTOSO\tLAKI-LAKI`;
+        }
+
+        function handleBulkSaveStudents() {
+            const targetCls = document.getElementById('bulkStudentClass').value;
+            const rawData = document.getElementById('bulkStudentData').value.trim();
+            if(!rawData) return;
+            
+            const lines = rawData.split('\n');
+            let addedCount = 0;
+            
+            if(!appData[targetCls]) appData[targetCls] = [];
+
+            lines.forEach(line => {
+                // Split by tab, semicolon, or comma
+                let parts = line.split(/\t|;|,/).map(p => p.trim()).filter(p => p !== '');
+                if (parts.length >= 3) {
+                    const id = parts[0];
+                    const nisn = parts[1];
+                    const name = parts[2].toUpperCase();
+                    let gender = parts[3] ? parts[3].toUpperCase() : 'LAKI-LAKI';
+                    if (!gender.includes('PEREMPUAN') && !gender.includes('P')) { gender = 'LAKI-LAKI'; } 
+                    else { gender = 'PEREMPUAN'; }
+
+                    // Check duplicate ID
+                    if(!appData[targetCls].some(s => s.id === id)){
+                        appData[targetCls].push({
+                            id: id, nisn: nisn, name: name, gender: gender, link: "", selected: false
+                        });
+                        addedCount++;
+                    }
+                }
+            });
+
+            appData[targetCls].sort((a,b) => a.name.localeCompare(b.name));
+            activeClass = targetCls;
+            saveData();
+            updateUI();
+            closeModal('bulkStudentModal');
+            showAlert(`${addedCount} siswa baru berhasil ditambahkan ke ${targetCls}.`);
+        }
+
+        // Dark Mode
+        function initDarkMode() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        }
+
+        // Export/Import JSON
         function exportDataJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(schoolData, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `presensi_sman2_nusa_${new Date().toISOString().slice(0,10)}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-            showAlert('File JSON cadangan data siswa berhasil diunduh.');
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `Backup_Presensi_SMAN2Nusa_${new Date().toISOString().slice(0,10)}.json`);
+            dlAnchorElem.click();
         }
 
         function importDataJSON(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const importedObj = JSON.parse(e.target.result);
-                    if (typeof importedObj === 'object' && importedObj !== null) {
-                        schoolData = importedObj;
-                        saveSchoolData();
-                        loadSchoolData();
-                        renderClassTabs();
-                        renderStudentList();
-                        updateOutputLinks();
-                        showAlert('Data presensi berhasil diimpor!');
-                    } else {
-                        showAlert('Format file JSON tidak valid.');
+                    const parsed = JSON.parse(e.target.result);
+                    if(typeof parsed === 'object') {
+                        appData = parsed;
+                        activeClass = Object.keys(appData)[0] || '';
+                        saveData();
+                        updateUI();
+                        showAlert("Data berhasil diimpor.");
                     }
                 } catch (err) {
-                    showAlert('Gagal membaca file JSON.');
+                    showAlert("Format JSON tidak valid.");
                 }
             };
             reader.readAsText(file);
+            event.target.value = ''; // reset
         }
 
-        function showConfirmModal(title, message, callback) {
-            document.getElementById('confirmTitle').textContent = title;
-            document.getElementById('confirmMessage').textContent = message;
-            pendingConfirmCallback = callback;
-            
-            const btn = document.getElementById('confirmExecuteBtn');
-            btn.onclick = function() {
-                if (pendingConfirmCallback) pendingConfirmCallback();
-                closeConfirmModal();
-            };
-
-            document.getElementById('confirmModal').classList.remove('hidden');
-        }
-
-        function closeConfirmModal() {
-            document.getElementById('confirmModal').classList.add('hidden');
-            pendingConfirmCallback = null;
-        }
-
+        // Notifications
+        let alertTimeout;
         function showAlert(msg) {
-            const alertBox = document.getElementById('alertBox');
-            const alertText = document.getElementById('alertText');
-            alertText.textContent = msg;
-            alertBox.classList.remove('hidden');
-            setTimeout(() => {
-                hideAlert();
-            }, 4000);
+            const box = document.getElementById('alertBox');
+            document.getElementById('alertText').textContent = msg;
+            box.classList.remove('hidden');
+            box.classList.add('flex');
+            
+            clearTimeout(alertTimeout);
+            alertTimeout = setTimeout(() => hideAlert(), 5000);
+        }
+        function hideAlert() {
+            const box = document.getElementById('alertBox');
+            box.classList.add('hidden');
+            box.classList.remove('flex');
         }
 
-        function hideAlert() {
-            document.getElementById('alertBox').classList.add('hidden');
+        // Confirm Dialog
+        let confirmActionCallback = null;
+        function showConfirm(title, message, callback) {
+            document.getElementById('confirmTitle').innerHTML = title;
+            document.getElementById('confirmMessage').innerHTML = message;
+            confirmActionCallback = callback;
+            openModal('confirmModal');
         }
+        document.getElementById('confirmExecuteBtn').onclick = () => {
+            if (confirmActionCallback) confirmActionCallback();
+            closeModal('confirmModal');
+        };
+
     </script>
 </body>
 </html>
