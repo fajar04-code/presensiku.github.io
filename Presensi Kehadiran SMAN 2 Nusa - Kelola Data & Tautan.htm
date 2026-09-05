@@ -216,6 +216,357 @@ input:focus,select:focus,textarea:focus{
   transition:width .2s ease;
 }
 </style>
+
+<style id="modern-final-design">
+:root{--blue:#2563eb;--border:#e2e8f0;--bg:#f6f8fc}
+body{
+  background:
+    radial-gradient(circle at 10% -5%,rgba(37,99,235,.10),transparent 28%),
+    radial-gradient(circle at 95% 0%,rgba(16,185,129,.07),transparent 25%),
+    var(--bg);
+}
+.dark body{background:radial-gradient(circle at 10% -5%,rgba(37,99,235,.14),transparent 28%),#0f172a}
+header{box-shadow:0 5px 24px rgba(15,23,42,.07);border-bottom:1px solid rgba(148,163,184,.18)}
+button{min-height:36px!important;border-radius:10px!important;font-size:.82rem!important;transition:.16s ease}
+button:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(15,23,42,.08)}
+#classTabs{
+  gap:6px!important;padding:5px!important;border-radius:14px;
+  background:rgba(255,255,255,.76);border:1px solid var(--border);
+  overflow-x:auto;scrollbar-width:none;backdrop-filter:blur(10px)
+}
+#classTabs::-webkit-scrollbar{display:none}
+#classTabs button{min-width:54px;min-height:34px!important;padding:6px 11px!important}
+#studentList{gap:10px!important}
+#studentList>*{
+  border:1px solid var(--border);border-radius:15px!important;
+  background:rgba(255,255,255,.95);box-shadow:0 3px 13px rgba(15,23,42,.045);
+  overflow:hidden;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease
+}
+#studentList>*:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(15,23,42,.09);border-color:#bfdbfe}
+.dark #studentList>*{background:rgba(30,41,59,.9);border-color:#334155}
+#studentList input[type=checkbox]{width:20px!important;height:20px!important;accent-color:var(--blue);cursor:pointer}
+input[type=text],input[type=search],select{min-height:40px;border-radius:11px!important}
+#outputLinkArea{border-radius:14px!important}
+@media(min-width:1024px){
+  main{max-width:1480px!important}
+  #studentList{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:640px){
+  main{padding-left:10px!important;padding-right:10px!important}
+  #studentList{display:block!important}
+  #studentList>*{margin-bottom:8px}
+  #classTabs button{min-width:50px;padding-left:9px!important;padding-right:9px!important}
+  #viewModeMenu{bottom:8px!important}
+  #viewModeMenu button{min-height:31px!important;padding:5px 8px!important;font-size:.7rem!important}
+}
+html.force-phone main{max-width:760px!important;margin:auto}
+html.force-phone #studentList{display:block!important}
+html.force-windows #studentList{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(max-width:700px){html.force-windows #studentList{grid-template-columns:1fr}}
+</style>
+
+
+<style id="super-rapi-ui-only">
+/* =========================================================
+   SUPER RAPI UI
+   CSS ONLY — DATA & LOGIKA TIDAK DISENTUH
+   ========================================================= */
+:root{
+  --ui-primary:#2563eb;
+  --ui-primary-dark:#1d4ed8;
+  --ui-success:#059669;
+  --ui-warning:#d97706;
+  --ui-danger:#dc2626;
+  --ui-text:#0f172a;
+  --ui-muted:#64748b;
+  --ui-border:#e2e8f0;
+  --ui-surface:#ffffff;
+  --ui-surface-soft:#f8fafc;
+  --ui-radius:18px;
+}
+
+html{scroll-behavior:smooth}
+body{
+  color:var(--ui-text);
+  background:
+    radial-gradient(900px 420px at -5% -10%,rgba(37,99,235,.12),transparent 60%),
+    radial-gradient(700px 360px at 105% 0%,rgba(16,185,129,.08),transparent 58%),
+    #f6f8fc;
+}
+
+/* ===== HEADER ===== */
+header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  border-bottom:1px solid rgba(148,163,184,.20);
+  background:rgba(255,255,255,.88)!important;
+  backdrop-filter:blur(18px) saturate(150%);
+  box-shadow:0 6px 24px rgba(15,23,42,.06);
+}
+header h1{
+  letter-spacing:-.035em;
+  line-height:1.15!important;
+}
+header p{letter-spacing:.01em}
+
+/* ===== GLOBAL BUTTONS ===== */
+button{
+  min-height:38px!important;
+  border-radius:11px!important;
+  font-weight:650!important;
+  letter-spacing:-.01em;
+  transition:transform .15s ease,box-shadow .15s ease,filter .15s ease,background .15s ease;
+}
+button:hover{
+  transform:translateY(-1px);
+  filter:saturate(1.04);
+}
+button:active{transform:translateY(0) scale(.98)}
+button:focus-visible{
+  outline:none!important;
+  box-shadow:0 0 0 3px rgba(37,99,235,.18)!important;
+}
+
+/* ===== MAIN CONTENT ===== */
+main{padding-bottom:80px}
+main > *{max-width:100%}
+
+/* ===== SECTION/CARD POLISH ===== */
+main .rounded-lg,
+main .rounded-xl,
+main .rounded-2xl{
+  border-color:rgba(226,232,240,.9);
+}
+main .shadow,
+main .shadow-sm,
+main .shadow-md,
+main .shadow-lg{
+  box-shadow:0 5px 20px rgba(15,23,42,.055)!important;
+}
+
+/* ===== CLASS TABS ===== */
+#classTabs{
+  display:flex!important;
+  align-items:center;
+  gap:6px!important;
+  padding:5px!important;
+  min-height:48px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  border:1px solid var(--ui-border);
+  border-radius:15px!important;
+  background:rgba(255,255,255,.76);
+  backdrop-filter:blur(12px);
+}
+#classTabs::-webkit-scrollbar{display:none}
+#classTabs button{
+  flex:0 0 auto;
+  min-width:56px;
+  min-height:35px!important;
+  padding:6px 13px!important;
+  border-radius:10px!important;
+}
+
+/* ===== STUDENT DIRECTORY ===== */
+#studentList{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:11px!important;
+  align-items:stretch;
+}
+#studentList > *{
+  position:relative;
+  min-width:0;
+  border:1px solid var(--ui-border)!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.96)!important;
+  box-shadow:0 3px 14px rgba(15,23,42,.045)!important;
+  overflow:hidden;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+#studentList > *::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:3px;
+  background:linear-gradient(180deg,#2563eb,#06b6d4);
+  opacity:.75;
+}
+#studentList > *:hover{
+  transform:translateY(-2px);
+  border-color:#bfdbfe!important;
+  box-shadow:0 10px 28px rgba(15,23,42,.085)!important;
+}
+
+/* Checkbox lebih nyaman */
+#studentList input[type="checkbox"]{
+  width:21px!important;
+  height:21px!important;
+  accent-color:var(--ui-primary);
+  cursor:pointer;
+}
+
+/* Nama siswa lebih tegas */
+#studentList [class*="font-semibold"],
+#studentList [class*="font-bold"]{
+  letter-spacing:-.015em;
+}
+
+/* ===== INPUT & SEARCH ===== */
+input[type="text"],
+input[type="search"],
+input[type="number"],
+select,
+textarea{
+  border-radius:12px!important;
+  border:1px solid #dbe3ee!important;
+  background:rgba(255,255,255,.95)!important;
+  min-height:40px;
+  box-shadow:0 2px 8px rgba(15,23,42,.025);
+}
+input:focus,select:focus,textarea:focus{
+  border-color:#93c5fd!important;
+  box-shadow:0 0 0 3px rgba(37,99,235,.11)!important;
+  outline:none!important;
+}
+
+/* ===== OUTPUT TAUTAN ===== */
+#outputLinkArea{
+  border-radius:14px!important;
+  border:1px solid #dbe3ee!important;
+  background:#f8fafc!important;
+  line-height:1.55;
+  scrollbar-width:thin;
+}
+
+/* ===== MODAL ===== */
+.fixed > div{
+  border-radius:20px!important;
+}
+.fixed{
+  backdrop-filter:blur(2px);
+}
+
+/* ===== VIEW MODE BAR ===== */
+#viewModeMenu{
+  bottom:12px!important;
+}
+#viewModeMenu > div{
+  padding:4px!important;
+  border-radius:16px!important;
+  box-shadow:0 10px 30px rgba(15,23,42,.16)!important;
+}
+#viewModeMenu button{
+  min-height:32px!important;
+  padding:5px 10px!important;
+  font-size:.72rem!important;
+}
+
+/* ===== BACKGROUND SEND PANEL ===== */
+#bgSendPanel .bg-send-card{
+  border:1px solid rgba(226,232,240,.9);
+  box-shadow:0 24px 70px rgba(15,23,42,.22);
+}
+
+/* ===== DARK MODE ===== */
+.dark body{
+  background:
+    radial-gradient(900px 420px at -5% -10%,rgba(37,99,235,.17),transparent 60%),
+    #0f172a;
+  color:#e2e8f0;
+}
+.dark header{
+  background:rgba(15,23,42,.88)!important;
+  border-bottom-color:#334155;
+}
+.dark #classTabs{
+  background:rgba(15,23,42,.78);
+  border-color:#334155;
+}
+.dark #studentList > *{
+  background:rgba(30,41,59,.94)!important;
+  border-color:#334155!important;
+}
+.dark #studentList > *:hover{border-color:#475569!important}
+.dark input[type="text"],
+.dark input[type="search"],
+.dark input[type="number"],
+.dark select,
+.dark textarea{
+  background:#1e293b!important;
+  border-color:#475569!important;
+  color:#e2e8f0;
+}
+.dark #outputLinkArea{
+  background:#0f172a!important;
+  border-color:#334155!important;
+}
+
+/* ===== WINDOWS ===== */
+@media(min-width:1024px){
+  main{max-width:1500px!important}
+  #studentList{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+/* ===== TABLET ===== */
+@media(min-width:641px) and (max-width:1023px){
+  main{padding-left:16px!important;padding-right:16px!important}
+  #studentList{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* ===== HP ===== */
+@media(max-width:640px){
+  body{font-size:14px}
+  header{padding-left:10px!important;padding-right:10px!important}
+  main{
+    padding-left:10px!important;
+    padding-right:10px!important;
+    padding-bottom:70px!important;
+  }
+  #studentList{
+    display:block!important;
+  }
+  #studentList > *{
+    margin-bottom:8px;
+  }
+  #classTabs{
+    min-height:45px;
+  }
+  #classTabs button{
+    min-width:50px;
+    min-height:34px!important;
+    padding:6px 9px!important;
+  }
+  button{
+    min-height:40px!important;
+  }
+  #viewModeMenu{bottom:7px!important}
+  #viewModeMenu > div{max-width:calc(100vw - 16px)}
+  #viewModeMenu button{
+    min-height:31px!important;
+    padding:5px 8px!important;
+  }
+}
+
+/* ===== FORCED MODES ===== */
+html.force-phone main{
+  max-width:760px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+html.force-phone #studentList{display:block!important}
+html.force-windows #studentList{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+@media(max-width:700px){
+  html.force-windows #studentList{grid-template-columns:1fr!important}
+}
+</style>
+
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 h-full flex flex-col transition-colors duration-200">
 
@@ -232,26 +583,11 @@ input:focus,select:focus,textarea:focus{
         </div>
         
         <div class="flex items-center flex-wrap gap-2">
-            <button onclick="openAddStudentModal()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition flex items-center gap-1.5">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>+ Siswa</span>
-            </button>
-            <button onclick="openBulkStudentModal()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-violet-600 text-white hover:bg-violet-700 shadow-sm transition flex items-center gap-1.5">
-                <i class="fa-solid fa-users"></i>
-                <span>+ Massal</span>
+            <button onclick="openSettingsPanel()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-slate-700 text-white hover:bg-slate-800 shadow-sm transition flex items-center gap-1.5" title="Pengaturan aplikasi">
+                <i class="fa-solid fa-gear"></i>
+                <span>Pengaturan</span>
             </button>
             <button onclick="openResultsSheet()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-amber-500 text-white hover:bg-amber-600 shadow-sm transition flex items-center gap-1.5" title="Buka hasil di Google Sheet"><i class="fa-solid fa-table"></i><span>Lihat Hasil</span></button>
-            <button onclick="openAddClassModal()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm transition flex items-center gap-1.5">
-                <i class="fa-solid fa-folder-plus"></i>
-                <span>+ Kelas</span>
-            </button>
-            <button onclick="exportDataJSON()" class="p-2.5 text-xs font-medium rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition" title="Ekspor Data (Backup JSON)">
-                <i class="fa-solid fa-download"></i>
-            </button>
-            <label class="p-2.5 text-xs font-medium rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition" title="Impor Data (Upload JSON)">
-                <i class="fa-solid fa-upload"></i>
-                <input type="file" id="importJsonInput" accept=".json" onchange="importDataJSON(event)" class="hidden">
-            </label>
             <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition" title="Ganti Tema">
                 <i class="fa-solid fa-moon dark:hidden"></i>
                 <i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i>
@@ -3808,24 +4144,28 @@ input:focus,select:focus,textarea:focus{
         }
 
         function selectAll(isSelect) {
-            if (!currentActiveClassName) return;
+            // Pilih Semua / Batalkan berlaku untuk SELURUH siswa pada kelas aktif.
+            if (!currentActiveClassName || !Array.isArray(schoolData[currentActiveClassName])) {
+                showAlert('Pilih kelas terlebih dahulu.');
+                return;
+            }
+
             const students = schoolData[currentActiveClassName];
-            const searchKeyword = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
-            
             students.forEach(student => {
-                const matchesSearch = !searchKeyword || 
-                    student.name.toLowerCase().includes(searchKeyword) || 
-                    String(student.id ?? '').toLowerCase().includes(searchKeyword) ||
-                    String(student.nisn ?? '').toLowerCase().includes(searchKeyword);
-                
-                if (matchesSearch) {
-                    selectedStudents[student.id] = isSelect;
-                }
+                if (!student || student.id == null) return;
+                const key = String(student.id);
+                selectedStudents[key] = !!isSelect;
+                student.selected = !!isSelect;
             });
-            
+
             saveSchoolData();
             renderStudentList();
             updateOutputLinks();
+
+            showAlert(isSelect
+                ? `Semua ${students.length} siswa di Kelas ${currentActiveClassName} telah dipilih.`
+                : `Semua pilihan di Kelas ${currentActiveClassName} telah dibatalkan.`
+            );
         }
 
         function updateOutputLinks() {
@@ -4521,85 +4861,97 @@ input:focus,select:focus,textarea:focus{
 })();
 </script>
 
-<script id="kosongkan-semua-fixed">
+<script id="selection-functions-fixed">
 (function(){
-  function kosongkanSemuaTautanFixed(){
-    // Batalkan pilihan pada seluruh siswa di seluruh kelas.
-    if (typeof schoolData !== 'undefined' && schoolData) {
-      Object.keys(schoolData).forEach(function(className){
-        if (!Array.isArray(schoolData[className])) return;
-
-        schoolData[className].forEach(function(student){
-          if (student) student.selected = false;
-        });
-      });
-    }
-
-    // Sinkronkan selectedStudents, jika variabel tersebut tersedia.
-    if (typeof selectedStudents !== 'undefined' && selectedStudents) {
-      Object.keys(selectedStudents).forEach(function(id){
-        selectedStudents[id] = false;
-      });
-    }
-
-    // Simpan state yang sudah dikosongkan.
-    if (typeof saveSchoolData === 'function') {
-      saveSchoolData();
-    }
-
-    // Render ulang daftar kelas/siswa agar checkbox langsung berubah.
-    if (typeof renderClassTabs === 'function') {
-      renderClassTabs();
-    }
-    if (typeof renderStudentList === 'function') {
-      renderStudentList();
-    }
-    if (typeof updateOutputLinks === 'function') {
-      updateOutputLinks();
-    }
-
-    if (typeof showAlert === 'function') {
-      showAlert('Semua pilihan tautan dari seluruh kelas telah dikosongkan.');
-    }
+  function syncAndRefresh(){
+    if(typeof saveSchoolData==='function') saveSchoolData();
+    if(typeof renderClassTabs==='function') renderClassTabs();
+    if(typeof renderStudentList==='function') renderStudentList();
+    if(typeof updateOutputLinks==='function') updateOutputLinks();
   }
-
-  // Jadikan fungsi global supaya dapat dipakai bila diperlukan.
-  window.kosongkanSemuaTautanFixed = kosongkanSemuaTautanFixed;
-
-  document.addEventListener('DOMContentLoaded', function(){
-    var btn = document.getElementById('btnKosongkanSemua');
-    if (!btn) return;
-
-    // Hapus listener lama dengan mengganti node tombol.
-    var cleanBtn = btn.cloneNode(true);
-    btn.parentNode.replaceChild(cleanBtn, btn);
-
-    cleanBtn.addEventListener('click', function(e){
-      e.preventDefault();
-      e.stopPropagation();
-
-      var jumlah = 0;
-      if (typeof schoolData !== 'undefined' && schoolData) {
-        Object.keys(schoolData).forEach(function(className){
-          if (Array.isArray(schoolData[className])) {
-            jumlah += schoolData[className].filter(function(s){
-              return s && s.selected;
-            }).length;
-          }
+  window.kosongkanSemuaTautanFixed=function(){
+    if(typeof schoolData==='undefined' || !schoolData) return;
+    var jumlah=0;
+    Object.keys(schoolData).forEach(function(className){
+      var list=schoolData[className];
+      if(!Array.isArray(list)) return;
+      list.forEach(function(student){
+        if(!student) return;
+        var key=String(student.id);
+        if(student.selected || (typeof selectedStudents!=='undefined' && selectedStudents[key])) jumlah++;
+        student.selected=false;
+        if(typeof selectedStudents!=='undefined' && selectedStudents) delete selectedStudents[key];
+      });
+    });
+    syncAndRefresh();
+    if(typeof showAlert==='function') showAlert(jumlah ? 'Semua pilihan dari seluruh kelas telah dikosongkan.' : 'Tidak ada siswa yang sedang dipilih.');
+  };
+  document.addEventListener('DOMContentLoaded',function(){
+    var btn=document.getElementById('btnKosongkanSemua');
+    if(!btn) return;
+    var cleanBtn=btn.cloneNode(true);
+    btn.parentNode.replaceChild(cleanBtn,btn);
+    cleanBtn.addEventListener('click',function(e){
+      e.preventDefault(); e.stopPropagation();
+      var jumlah=0;
+      if(typeof schoolData!=='undefined' && schoolData){
+        Object.keys(schoolData).forEach(function(c){
+          (Array.isArray(schoolData[c])?schoolData[c]:[]).forEach(function(x){
+            if(x && (x.selected || (typeof selectedStudents!=='undefined' && selectedStudents[String(x.id)]))) jumlah++;
+          });
         });
       }
-
-      var pesan =
-        'KOSONGKAN SEMUA PILIHAN?\\n\\n' +
-        'Akan membatalkan ' + jumlah +
-        ' pilihan tautan dari seluruh kelas.\\n\\n' +
-        'Data siswa dan link Google Form TIDAK akan dihapus.';
-
-      if (window.confirm(pesan)) {
-        kosongkanSemuaTautanFixed();
+      if(window.confirm('KOSONGKAN SEMUA PILIHAN?\n\nSebanyak '+jumlah+' siswa yang terpilih akan dibatalkan dari seluruh kelas.\n\nData siswa dan tautan Google Form TIDAK akan dihapus.')){
+        window.kosongkanSemuaTautanFixed();
       }
     });
   });
+})();
+</script>
+
+<!-- PANEL PENGATURAN -->
+<div id="settingsPanel" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm p-4 flex items-center justify-center">
+  <div class="w-full max-w-lg bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+      <div><h3 class="font-bold text-base text-gray-900 dark:text-white"><i class="fa-solid fa-gear text-indigo-500 mr-2"></i>Pengaturan & Kelola Data</h3>
+      <p class="text-[11px] text-gray-500 mt-1">Fungsi pengelolaan data siswa tersedia di sini.</p></div>
+      <button type="button" onclick="closeSettingsPanel()" class="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-700"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <button type="button" onclick="closeSettingsPanel();openAddStudentModal()" class="settings-action bg-indigo-600 text-white"><i class="fa-solid fa-user-plus"></i>Tambah Siswa</button>
+      <button type="button" onclick="closeSettingsPanel();openBulkStudentModal()" class="settings-action bg-violet-600 text-white"><i class="fa-solid fa-users"></i>Tambah Siswa Massal</button>
+      <button type="button" onclick="closeSettingsPanel();openAddClassModal()" class="settings-action bg-emerald-600 text-white"><i class="fa-solid fa-folder-plus"></i>Tambah Kelas</button>
+      <button type="button" onclick="toggleManageMode()" id="btnManageMode" class="settings-action bg-slate-700 text-white"><i class="fa-solid fa-pen-to-square"></i><span>Kelola / Edit Data Siswa</span></button>
+      <button type="button" onclick="closeSettingsPanel();resetToDefaultData()" class="settings-action bg-red-600 text-white sm:col-span-2"><i class="fa-solid fa-rotate-left"></i>Reset ke Data Awal</button>
+    </div>
+    <div class="px-5 pb-5"><div class="rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 p-3 text-[11px] text-indigo-700 dark:text-indigo-300">
+      <i class="fa-solid fa-circle-info mr-1"></i> Aktifkan <b>Kelola / Edit Data Siswa</b> untuk menampilkan tombol Edit dan Hapus pada kartu siswa.
+    </div></div>
+  </div>
+</div>
+<style id="settings-mobile-fix">
+.settings-action{min-height:48px!important;border-radius:13px!important;display:flex;align-items:center;justify-content:center;gap:9px;font-size:12px;box-shadow:0 4px 12px rgba(15,23,42,.10)}
+body:not(.manage-data-mode) #studentListContainer button[title="Edit"],body:not(.manage-data-mode) #studentListContainer button[title="Hapus"]{display:none!important}
+@media(max-width:700px){
+ #studentListContainer{max-height:none!important;overflow-y:visible!important;padding:8px!important}
+ #studentListContainer > div{padding:11px!important}
+ #studentListContainer h4{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:normal!important;overflow-wrap:anywhere!important;line-height:1.35!important;font-size:13px!important}
+ #studentListContainer p{white-space:normal!important;line-height:1.35!important}
+}
+</style>
+<script id="settings-panel-script">
+(function(){
+ window.openSettingsPanel=function(){var e=document.getElementById('settingsPanel');if(e)e.classList.remove('hidden')};
+ window.closeSettingsPanel=function(){var e=document.getElementById('settingsPanel');if(e)e.classList.add('hidden')};
+ window.toggleManageMode=function(){
+   document.body.classList.toggle('manage-data-mode');
+   var active=document.body.classList.contains('manage-data-mode');
+   var b=document.getElementById('btnManageMode');
+   if(b){b.classList.toggle('bg-emerald-600',active);b.classList.toggle('bg-slate-700',!active);var sp=b.querySelector('span');if(sp)sp.textContent=active?'Selesai Kelola Data':'Kelola / Edit Data Siswa'}
+   if(typeof renderStudentList==='function')renderStudentList();
+   if(typeof showAlert==='function')showAlert(active?'Mode kelola aktif. Tombol Edit dan Hapus ditampilkan.':'Mode kelola dinonaktifkan.');
+ };
+ document.addEventListener('click',function(e){var p=document.getElementById('settingsPanel');if(p&&e.target===p)closeSettingsPanel()});
 })();
 </script>
 
