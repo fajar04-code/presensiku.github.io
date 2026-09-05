@@ -190,6 +190,32 @@ input:focus,select:focus,textarea:focus{
   html.force-windows #studentList{display:block}
 }
 </style>
+
+<style id="background-submit-ui">
+#bgSendPanel{
+  position:fixed; inset:0; z-index:100;
+  display:none; align-items:center; justify-content:center;
+  background:rgba(15,23,42,.48); backdrop-filter:blur(6px);
+}
+#bgSendPanel .bg-send-card{
+  width:min(520px,calc(100vw - 28px));
+  border-radius:22px;
+  padding:22px;
+  background:white;
+  color:#0f172a;
+  box-shadow:0 25px 70px rgba(0,0,0,.22);
+}
+.dark #bgSendPanel .bg-send-card{background:#1e293b;color:#f8fafc}
+#bgSendProgress{
+  height:10px; border-radius:999px; overflow:hidden;
+  background:#e2e8f0;
+}
+#bgSendProgressBar{
+  width:0%; height:100%; border-radius:999px;
+  background:linear-gradient(90deg,#2563eb,#06b6d4);
+  transition:width .2s ease;
+}
+</style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 h-full flex flex-col transition-colors duration-200">
 
@@ -276,6 +302,14 @@ input:focus,select:focus,textarea:focus{
                     <div class="flex items-center gap-2">
                         <button onclick="selectAll(true)" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">Pilih Semua</button>
                         <button onclick="selectAll(false)" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition">Batalkan</button>
+<button type="button" id="btnKosongkanSemua"
+  class="px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-sm"
+  title="Batalkan semua tautan yang terpilih di seluruh kelas">
+  <i class="fa-solid fa-eraser mr-1"></i> Kosongkan
+</button>
+
+
+
                     </div>
                 </div>
 
@@ -370,6 +404,11 @@ input:focus,select:focus,textarea:focus{
                     <button onclick="processAndOpen()" class="w-full py-3 text-sm font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-500/20 transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-rocket"></i> Buka Semua Tautan Terpilih
                     </button>
+<button type="button" id="btnKirimTanpaTab"
+  class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-sm"
+  title="Kirim tautan terpilih tanpa membuka tab baru">
+  <i class="fa-solid fa-paper-plane mr-1"></i> Kirim Tanpa Tab
+</button>
                     <button onclick="copyAllOutputLinks()" class="w-full py-2.5 text-sm font-medium rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition flex items-center justify-center gap-2">
                         <i class="fa-regular fa-copy"></i> Salin Semua Tautan
                     </button>
@@ -4327,5 +4366,242 @@ input:focus,select:focus,textarea:focus{
   setMode(saved);
 })();
 </script>
+
+
+
+
+<div id="bgSendPanel" aria-hidden="true">
+  <div class="bg-send-card">
+    <div class="flex items-center justify-between gap-3 mb-3">
+      <div>
+        <div class="font-bold text-lg">Mengirim Presensi</div>
+        <div id="bgSendStatus" class="text-sm opacity-70">Menyiapkan...</div>
+      </div>
+      <button type="button" id="bgSendClose"
+        class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700"
+        title="Tutup">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div id="bgSendProgress">
+      <div id="bgSendProgressBar"></div>
+    </div>
+    <div class="flex justify-between mt-2 text-xs opacity-70">
+      <span id="bgSendCount">0 / 0</span>
+      <span id="bgSendResult">0 berhasil</span>
+    </div>
+    <div id="bgSendDetail" class="mt-4 text-sm max-h-32 overflow-auto"></div>
+  </div>
+</div>
+
+<script id="background-submit">
+(function(){
+  const panel = document.getElementById('bgSendPanel');
+  const statusEl = document.getElementById('bgSendStatus');
+  const countEl = document.getElementById('bgSendCount');
+  const resultEl = document.getElementById('bgSendResult');
+  const detailEl = document.getElementById('bgSendDetail');
+  const bar = document.getElementById('bgSendProgressBar');
+
+  function getSelectedLinks(){
+    if(typeof schoolData === 'undefined') return [];
+    const rows=[];
+    Object.keys(schoolData).forEach(function(className){
+      const arr=schoolData[className];
+      if(!Array.isArray(arr)) return;
+      arr.forEach(function(student){
+        if(student && student.selected && student.link){
+          rows.push({className:className, name:student.name||'', link:student.link});
+        }
+      });
+    });
+    return rows;
+  }
+
+  function showPanel(){
+    if(!panel) return;
+    panel.style.display='flex';
+    panel.setAttribute('aria-hidden','false');
+  }
+
+  function hidePanel(){
+    if(!panel) return;
+    panel.style.display='none';
+    panel.setAttribute('aria-hidden','true');
+  }
+
+  async function sendOne(item){
+    try{
+      // Google Form formResponse biasanya menerima GET. no-cors mencegah
+      // pembacaan response, tetapi request tetap dikirim tanpa membuka tab.
+      await fetch(item.link, {
+        method:'GET',
+        mode:'no-cors',
+        cache:'no-store',
+        credentials:'omit'
+      });
+      return true;
+    }catch(e){
+      // Fallback: image beacon juga tidak membuka tab baru.
+      try{
+        await new Promise(function(resolve){
+          const img=new Image();
+          img.onload=img.onerror=function(){resolve()};
+          img.src=item.link;
+          setTimeout(resolve,2500);
+        });
+        return true;
+      }catch(err){
+        return false;
+      }
+    }
+  }
+
+  async function sendAll(){
+    const items=getSelectedLinks();
+    if(!items.length){
+      if(typeof showAlert==='function') showAlert('Tidak ada siswa/tautan yang tercentang.');
+      else alert('Tidak ada siswa/tautan yang tercentang.');
+      return;
+    }
+
+    const ok=window.confirm(
+      'Kirim ' + items.length + ' tautan presensi tanpa membuka tab baru?\\n\\n' +
+      'Data siswa dan tautan tidak akan dihapus.'
+    );
+    if(!ok) return;
+
+    showPanel();
+    statusEl.textContent='Mengirim tautan tanpa membuka tab baru...';
+    detailEl.innerHTML='';
+    bar.style.width='0%';
+
+    let success=0;
+    let failed=0;
+
+    for(let i=0;i<items.length;i++){
+      const item=items[i];
+      statusEl.textContent='Mengirim: '+(item.name || 'Siswa');
+      countEl.textContent=(i+1)+' / '+items.length;
+
+      const sent=await sendOne(item);
+      if(sent) success++; else failed++;
+
+      resultEl.textContent=success+' berhasil'+(failed ? ' • '+failed+' gagal' : '');
+      bar.style.width=Math.round(((i+1)/items.length)*100)+'%';
+
+      detailEl.innerHTML =
+        '<div class="flex items-center gap-2 py-1">' +
+        '<span>'+(sent?'✅':'⚠️')+'</span>' +
+        '<span><b>'+escapeHtml(item.name || 'Siswa')+'</b> — '+escapeHtml(item.className)+'</span>' +
+        '</div>' + detailEl.innerHTML;
+
+      // Beri jeda kecil agar browser tidak membanjiri request sekaligus.
+      await new Promise(r=>setTimeout(r,120));
+    }
+
+    statusEl.textContent='Proses selesai.';
+    if(typeof showAlert==='function'){
+      showAlert('Pengiriman selesai: '+success+' tautan diproses'+(failed ? ', '+failed+' gagal.' : '.'));
+    }
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    const btn=document.getElementById('btnKirimTanpaTab');
+    if(btn) btn.addEventListener('click',sendAll);
+    const close=document.getElementById('bgSendClose');
+    if(close) close.addEventListener('click',hidePanel);
+  });
+})();
+</script>
+
+<script id="kosongkan-semua-fixed">
+(function(){
+  function kosongkanSemuaTautanFixed(){
+    // Batalkan pilihan pada seluruh siswa di seluruh kelas.
+    if (typeof schoolData !== 'undefined' && schoolData) {
+      Object.keys(schoolData).forEach(function(className){
+        if (!Array.isArray(schoolData[className])) return;
+
+        schoolData[className].forEach(function(student){
+          if (student) student.selected = false;
+        });
+      });
+    }
+
+    // Sinkronkan selectedStudents, jika variabel tersebut tersedia.
+    if (typeof selectedStudents !== 'undefined' && selectedStudents) {
+      Object.keys(selectedStudents).forEach(function(id){
+        selectedStudents[id] = false;
+      });
+    }
+
+    // Simpan state yang sudah dikosongkan.
+    if (typeof saveSchoolData === 'function') {
+      saveSchoolData();
+    }
+
+    // Render ulang daftar kelas/siswa agar checkbox langsung berubah.
+    if (typeof renderClassTabs === 'function') {
+      renderClassTabs();
+    }
+    if (typeof renderStudentList === 'function') {
+      renderStudentList();
+    }
+    if (typeof updateOutputLinks === 'function') {
+      updateOutputLinks();
+    }
+
+    if (typeof showAlert === 'function') {
+      showAlert('Semua pilihan tautan dari seluruh kelas telah dikosongkan.');
+    }
+  }
+
+  // Jadikan fungsi global supaya dapat dipakai bila diperlukan.
+  window.kosongkanSemuaTautanFixed = kosongkanSemuaTautanFixed;
+
+  document.addEventListener('DOMContentLoaded', function(){
+    var btn = document.getElementById('btnKosongkanSemua');
+    if (!btn) return;
+
+    // Hapus listener lama dengan mengganti node tombol.
+    var cleanBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(cleanBtn, btn);
+
+    cleanBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+
+      var jumlah = 0;
+      if (typeof schoolData !== 'undefined' && schoolData) {
+        Object.keys(schoolData).forEach(function(className){
+          if (Array.isArray(schoolData[className])) {
+            jumlah += schoolData[className].filter(function(s){
+              return s && s.selected;
+            }).length;
+          }
+        });
+      }
+
+      var pesan =
+        'KOSONGKAN SEMUA PILIHAN?\\n\\n' +
+        'Akan membatalkan ' + jumlah +
+        ' pilihan tautan dari seluruh kelas.\\n\\n' +
+        'Data siswa dan link Google Form TIDAK akan dihapus.';
+
+      if (window.confirm(pesan)) {
+        kosongkanSemuaTautanFixed();
+      }
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
