@@ -627,8 +627,124 @@ html.force-windows #studentList{
 .send-complete-badge{display:none;margin-top:12px;padding:9px 12px;border-radius:12px;background:rgba(16,185,129,.10);color:#059669;font-size:12px;font-weight:800;text-align:center}.send-complete-badge.show{display:block}
 @media(max-width:640px){#classTabs{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:8px!important}#classTabs button{min-height:64px!important;border-radius:14px!important;font-size:.82rem!important}}
 </style>
+
+<style id="role-login-ui">
+#loginScreen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 15% 10%,rgba(59,130,246,.18),transparent 35%),radial-gradient(circle at 85% 90%,rgba(16,185,129,.14),transparent 35%),#f8fafc;}
+.dark #loginScreen{background:radial-gradient(circle at 15% 10%,rgba(59,130,246,.18),transparent 35%),#0b1220}
+.login-card{width:min(430px,100%);background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border:1px solid rgba(148,163,184,.18);border-radius:28px;padding:28px;box-shadow:0 30px 90px rgba(15,23,42,.18)}
+.dark .login-card{background:rgba(15,23,42,.94);border-color:rgba(148,163,184,.16);box-shadow:0 30px 90px rgba(0,0,0,.35)}
+.login-logo{width:64px;height:64px;margin:0 auto 14px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;font-size:28px;box-shadow:0 14px 32px rgba(37,99,235,.28)}
+.login-card h1{text-align:center;font-size:22px;font-weight:900;color:#0f172a}.dark .login-card h1{color:#f8fafc}
+.login-subtitle{text-align:center;font-size:11px;color:#64748b;margin:6px 0 22px}.dark .login-subtitle{color:#94a3b8}
+.login-field{position:relative;margin-bottom:12px}.login-field i{position:absolute;left:14px;top:14px;color:#94a3b8;font-size:13px}.login-field input{width:100%;height:46px;padding:0 42px;border:1px solid #e2e8f0;background:#f8fafc;font-size:13px;color:#0f172a}.dark .login-field input{background:#111827;border-color:#334155;color:#f8fafc}
+.login-password-toggle{position:absolute;right:5px;top:4px;width:38px;height:38px;min-height:38px;border:0;background:transparent;color:#64748b}
+.login-submit{width:100%;height:46px;border:0!important;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;font-weight:900;font-size:13px;box-shadow:0 10px 24px rgba(37,99,235,.25);margin-top:6px}.login-submit:disabled{opacity:.65;cursor:wait}
+.login-error{display:none;margin:12px 0 0;padding:10px 12px;border-radius:12px;background:#fee2e2;color:#b91c1c;font-size:11px;font-weight:700}.login-error.show{display:block}.dark .login-error{background:#450a0a;color:#fecaca}
+.login-user-info{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:12px;background:#f1f5f9;color:#475569;font-size:10px;font-weight:800}.dark .login-user-info{background:#1e293b;color:#cbd5e1}
+#currentUserInfo{display:none}
+body.login-locked>header,body.login-locked>main{visibility:hidden}
+.role-hidden{display:none!important}
+</style>
+
+<style>
+/* DEBUG LOGIN SEMENTARA */
+#loginDebugPanel{margin-top:14px;border:1px solid rgba(148,163,184,.35);border-radius:14px;background:rgba(248,250,252,.78);overflow:hidden;text-align:left;font-size:10px;}
+.dark #loginDebugPanel{background:rgba(15,23,42,.72);border-color:rgba(100,116,139,.35);}
+#loginDebugHeader{display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:rgba(226,232,240,.55);font-weight:800;color:#334155;}
+.dark #loginDebugHeader{background:rgba(30,41,59,.7);color:#e2e8f0;}
+#loginDebugBody{padding:9px 11px;display:grid;gap:5px;}
+.login-debug-row{display:grid;grid-template-columns:88px 1fr;gap:7px;align-items:start;}
+.login-debug-label{color:#64748b;font-weight:700;}
+.dark .login-debug-label{color:#94a3b8;}
+.login-debug-value{color:#0f172a;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
+.dark .login-debug-value{color:#e2e8f0;}
+.login-debug-ok{color:#15803d!important;font-weight:800;}
+.login-debug-warn{color:#b45309!important;font-weight:800;}
+.login-debug-error{color:#dc2626!important;font-weight:800;}
+#loginDebugRaw{margin:2px 0 0;padding:7px;border-radius:8px;background:#0f172a;color:#dbeafe;white-space:pre-wrap;max-height:145px;overflow:auto;font-size:9px;line-height:1.45;}
+#loginDebugToggle{border:0;background:transparent;color:inherit;font-size:9px;font-weight:800;cursor:pointer;padding:0;}
+</style>
+
+<style id="no-login-mode">
+/* Mode aplikasi tanpa halaman login: seluruh aplikasi langsung tampil. */
+#loginScreen{display:none!important}
+#currentUserInfo,#logoutButton,#loginDebugPanel{display:none!important}
+body.login-locked>header,body.login-locked>main{visibility:visible!important}
+</style>
+
+<style id="presensi-khusus-same-tab">
+.presensi-khusus-btn{
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.presensi-khusus-btn::after{
+  content:"Buka di halaman ini";
+}
+.presensi-khusus-btn:focus-visible{
+  outline:3px solid rgba(99,102,241,.35);
+  outline-offset:3px;
+}
+@media (max-width:640px){
+  .presensi-khusus-btn{
+    min-height:88px;
+    padding:13px;
+    border-radius:16px;
+  }
+  .presensi-khusus-btn i{
+    width:36px;
+    height:36px;
+    font-size:16px;
+  }
+  .presensi-khusus-btn span{
+    font-size:12px;
+  }
+}
+</style>
+
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 h-full flex flex-col transition-colors duration-200">
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo"><i class="fa-solid fa-school"></i></div>
+    <h1>Presensi Kehadiran</h1>
+    <p class="login-subtitle">SMAN 2 Nusa · Silakan masuk sesuai akun Anda</p>
+    <form onsubmit="handleLogin(event)">
+      <div class="login-field">
+        <i class="fa-solid fa-user"></i>
+        <input id="loginUsername" type="text" autocomplete="username" placeholder="Username" required>
+      </div>
+      <div class="login-field">
+        <i class="fa-solid fa-lock"></i>
+        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
+        <button type="button" class="login-password-toggle" onclick="toggleLoginPassword()" title="Tampilkan password"><i id="loginPasswordIcon" class="fa-solid fa-eye"></i></button>
+      </div>
+      <button id="loginSubmit" class="login-submit" type="submit"><i class="fa-solid fa-right-to-bracket mr-2"></i>Masuk</button>
+      <div id="loginError" class="login-error"></div>
+    </form>
+    <div id="loginApiHint" class="text-center text-[9px] text-slate-400 mt-4">Login terhubung ke Google Spreadsheet melalui Google Apps Script.</div>
+    <div id="loginDebugPanel">
+      <div id="loginDebugHeader">
+        <span><i class="fa-solid fa-bug mr-1"></i> DEBUG LOGIN SEMENTARA</span>
+        <button id="loginDebugToggle" type="button" onclick="toggleLoginDebug()">Sembunyikan</button><button type="button" onclick="testLoginJsonpOnly()" style="margin-left:8px;border:0;background:#2563eb;color:white;border-radius:7px;padding:3px 7px;font-size:9px;font-weight:800">Tes JSONP</button>
+      </div>
+      <div id="loginDebugBody">
+        <div class="login-debug-row"><div class="login-debug-label">API URL</div><div id="debugApiUrl" class="login-debug-value">-</div></div>
+        <div class="login-debug-row"><div class="login-debug-label">Action</div><div id="debugAction" class="login-debug-value">-</div></div>
+        <div class="login-debug-row"><div class="login-debug-label">Callback</div><div id="debugCallback" class="login-debug-value">-</div></div>
+        <div class="login-debug-row"><div class="login-debug-label">Request</div><div id="debugRequest" class="login-debug-value">Belum dikirim</div></div>
+        <div class="login-debug-row"><div class="login-debug-label">JSONP</div><div id="debugJsonp" class="login-debug-value">Belum diuji</div></div>
+        <div class="login-debug-row"><div class="login-debug-label">Respons</div><div id="debugResponse" class="login-debug-value">Belum diterima</div></div>
+        <div class="login-debug-row"><div class="login-debug-label">API Version</div><div id="debugApiVersion" class="login-debug-value">-</div></div>
+        <div class="login-debug-row"><div class="login-debug-label">Success</div><div id="debugSuccess" class="login-debug-value">-</div></div>
+        <div class="login-debug-row"><div class="login-debug-label">Role</div><div id="debugRole" class="login-debug-value">-</div></div>
+        <div class="login-debug-row"><div class="login-debug-label">Error</div><div id="debugError" class="login-debug-value">-</div></div>
+        <div class="login-debug-row" style="grid-template-columns:1fr;"><div class="login-debug-label">Raw JSONP</div><pre id="loginDebugRaw">Belum ada respons.</pre></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
     <!-- Header -->
     <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm py-4 px-4 sm:px-6 flex flex-wrap justify-between items-center gap-4">
@@ -643,11 +759,13 @@ html.force-windows #studentList{
         </div>
         
         <div class="flex items-center flex-wrap gap-2">
-            <button onclick="openSettingsPanel()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-slate-700 text-white hover:bg-slate-800 shadow-sm transition flex items-center gap-1.5" title="Pengaturan aplikasi">
+            <button id="settingsButton" onclick="openSettingsPanel()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-slate-700 text-white hover:bg-slate-800 shadow-sm transition flex items-center gap-1.5" title="Pengaturan aplikasi">
                 <i class="fa-solid fa-gear"></i>
                 <span>Pengaturan</span>
             </button>
-            <button onclick="openResultsSheet()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-amber-500 text-white hover:bg-amber-600 shadow-sm transition flex items-center gap-1.5" title="Lihat dashboard hasil presensi"><i class="fa-solid fa-chart-pie"></i><span>Lihat Hasil</span></button>
+            <button id="resultsButton" onclick="openResultsSheet()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-amber-500 text-white hover:bg-amber-600 shadow-sm transition flex items-center gap-1.5" title="Lihat hasil presensi"><i class="fa-solid fa-chart-pie"></i><span>Lihat Hasil</span></button>
+            <div id="currentUserInfo" class="login-user-info"><i class="fa-solid fa-user-shield"></i><span id="currentUserName">-</span><span id="currentUserRole" class="uppercase"></span></div>
+            <button id="logoutButton" onclick="logoutApp()" class="role-hidden px-3 py-2 text-xs font-semibold rounded-xl bg-rose-500 text-white hover:bg-rose-600 shadow-sm transition flex items-center gap-1.5" title="Keluar"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar</span></button>
             <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition" title="Ganti Tema">
                 <i class="fa-solid fa-moon dark:hidden"></i>
                 <i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i>
@@ -722,16 +840,16 @@ html.force-windows #studentList{
                 <span class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Pilih jenis presensi khusus untuk membuka formulir terkait.</span>
             </div>
             <div class="grid grid-cols-2 gap-3 mt-1">
-                <a href="https://forms.gle/c4dMAXtYNpahjm4F8" target="_blank" rel="noopener noreferrer" class="presensi-khusus-btn bg-blue-500 hover:bg-blue-600">
+                <a href="https://forms.gle/c4dMAXtYNpahjm4F8" class="presensi-khusus-btn bg-blue-500 hover:bg-blue-600">
                     <i class="fa-solid fa-bed-pulse"></i><span>SAKIT</span>
                 </a>
-                <a href="https://forms.gle/sQYzvpgkqvaqeY1q6" target="_blank" rel="noopener noreferrer" class="presensi-khusus-btn bg-yellow-500 hover:bg-yellow-600">
+                <a href="https://forms.gle/sQYzvpgkqvaqeY1q6" class="presensi-khusus-btn bg-yellow-500 hover:bg-yellow-600">
                     <i class="fa-solid fa-envelope-open-text"></i><span>IZIN</span>
                 </a>
-                <a href="https://forms.gle/AGDTUVeq7MmFkSV38" target="_blank" rel="noopener noreferrer" class="presensi-khusus-btn bg-orange-500 hover:bg-orange-600">
+                <a href="https://forms.gle/AGDTUVeq7MmFkSV38" class="presensi-khusus-btn bg-orange-500 hover:bg-orange-600">
                     <i class="fa-solid fa-person-running"></i><span>TERLAMBAT</span>
                 </a>
-                <a href="https://forms.gle/XHoob5yMRTac19y9A" target="_blank" rel="noopener noreferrer" class="presensi-khusus-btn bg-red-500 hover:bg-red-600">
+                <a href="https://forms.gle/XHoob5yMRTac19y9A" class="presensi-khusus-btn bg-red-500 hover:bg-red-600">
                     <i class="fa-solid fa-user-xmark"></i><span>BOLOS</span>
                 </a>
             </div>
@@ -3990,63 +4108,7 @@ html.force-windows #studentList{
         let currentActiveClassName = '';
         let pendingConfirmCallback = null;
 
-        // ===== Lihat Hasil dari Google Spreadsheet =====
-        const RESULTS_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR3f_LifCDZ3C341cJYzRbdsJSfRqirIHuD7O7mk-TzyApW36N2bQlRMuZfM0g1BTFdGzDp8W4oFrgq/pubhtml';
-
-        function openResultsSheet() {
-            const panel = document.getElementById('resultsDashboardPanel');
-            if (!panel) return;
-            panel.classList.remove('hidden');
-            document.body.classList.add('results-dashboard-open');
-            loadResultsDashboard();
-        }
-
-        function closeResultsDashboard() {
-            const panel = document.getElementById('resultsDashboardPanel');
-            if (panel) panel.classList.add('hidden');
-            document.body.classList.remove('results-dashboard-open');
-        }
-
-        async function loadResultsDashboard() {
-            const status = document.getElementById('resultsDashboardStatus');
-            if (status) status.textContent = 'Memuat data dari Google Spreadsheet…';
-            const endpoint = RESULTS_SHEET_URL.replace('/pubhtml', '/gviz/tq?tqx=out:json');
-            try {
-                const response = await fetch(endpoint, { cache: 'no-store' });
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                const text = await response.text();
-                const start = text.indexOf('{');
-                const end = text.lastIndexOf('}');
-                if (start < 0 || end < start) throw new Error('Format data Google tidak dikenali');
-                const data = JSON.parse(text.slice(start, end + 1));
-                const rows = (data.table && data.table.rows) || [];
-                const counts = {Hadir:0, Sakit:0, Izin:0, Terlambat:0, Bolos:0};
-                const aliases = {
-                    H:'Hadir', HADIR:'Hadir',
-                    S:'Sakit', SAKIT:'Sakit',
-                    I:'Izin', IZIN:'Izin',
-                    T:'Terlambat', TERLAMBAT:'Terlambat',
-                    B:'Bolos', BOLOS:'Bolos'
-                };
-                rows.forEach(row => {
-                    (row.c || []).forEach(cell => {
-                        if (!cell) return;
-                        const raw = String(cell.f ?? cell.v ?? '').trim().toUpperCase();
-                        if (aliases[raw]) counts[aliases[raw]]++;
-                    });
-                });
-                Object.keys(counts).forEach(k => {
-                    const el = document.getElementById('resultCount' + k);
-                    if (el) el.textContent = counts[k].toLocaleString('id-ID');
-                });
-                if (status) status.textContent = 'Data berhasil diperbarui · ' + rows.length.toLocaleString('id-ID') + ' baris';
-            } catch (err) {
-                if (status) status.textContent = 'Tampilan tabel tetap tersedia. Rekap kartu belum dapat dibaca otomatis dari Spreadsheet.';
-                console.warn('Dashboard presensi:', err);
-            }
-        }
-
-        function toggleDarkMode() {
+                function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
         }
 
@@ -5009,54 +5071,439 @@ body:not(.manage-data-mode) #studentListContainer button[title="Edit"],body:not(
 </style>
 
 
-<!-- DASHBOARD HASIL PRESENSI DI DALAM APLIKASI -->
-<div id="resultsDashboardPanel" class="results-dashboard hidden">
-  <div class="results-dashboard-card">
-    <div class="results-dashboard-head">
-      <div>
-        <div class="results-dashboard-kicker"><i class="fa-solid fa-chart-pie"></i> REKAP PRESENSI</div>
-        <h2>Dashboard Hasil Presensi</h2>
-        <p id="resultsDashboardStatus">Menyiapkan data…</p>
-      </div>
-      <div class="results-dashboard-actions">
-        <button type="button" onclick="loadResultsDashboard()" class="results-dashboard-refresh" title="Refresh data"><i class="fa-solid fa-rotate"></i><span>Refresh</span></button>
-        <button type="button" onclick="closeResultsDashboard()" class="results-dashboard-close" title="Kembali"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-    </div>
+<!-- HASIL PRESENSI: ditampilkan langsung dari Google Spreadsheet -->
+<style id="results-frame-fast-style">
+/* =========================================================
+   HASIL PRESENSI — FRAME LANGIT BIRU + AWAN ANIMASI
+   Tetap ringan: hanya satu iframe Google Spreadsheet.
+   ========================================================= */
+#resultsFrameOverlay{position:fixed;inset:0;z-index:99999;display:none;flex-direction:column;overflow:hidden;background:linear-gradient(180deg,#43a5f5 0%,#8fd3ff 52%,#dff3ff 100%)}
+#resultsSky{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.results-cloud{position:absolute;width:180px;height:58px;border-radius:80px;background:rgba(255,255,255,.86);filter:blur(.2px);box-shadow:0 8px 22px rgba(30,110,180,.10)}
+.results-cloud:before,.results-cloud:after{content:"";position:absolute;background:inherit;border-radius:50%}
+.results-cloud:before{width:72px;height:72px;left:28px;top:-30px}
+.results-cloud:after{width:92px;height:92px;right:24px;top:-42px}
+.results-cloud.c1{top:8%;left:-210px;transform:scale(.85);animation:resultsCloudMove1 42s linear infinite}
+.results-cloud.c2{top:23%;left:-260px;transform:scale(1.15);opacity:.72;animation:resultsCloudMove2 58s linear infinite 5s}
+.results-cloud.c3{top:69%;left:-220px;transform:scale(.68);opacity:.62;animation:resultsCloudMove3 50s linear infinite 11s}
+.results-cloud.c4{top:82%;left:-300px;transform:scale(1.35);opacity:.55;animation:resultsCloudMove4 65s linear infinite 2s}
+@keyframes resultsCloudMove1{from{left:-220px}to{left:calc(100% + 220px)}}
+@keyframes resultsCloudMove2{from{left:-300px}to{left:calc(100% + 300px)}}
+@keyframes resultsCloudMove3{from{left:-240px}to{left:calc(100% + 240px)}}
+@keyframes resultsCloudMove4{from{left:-320px}to{left:calc(100% + 320px)}}
+.results-sparkle{position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.72);animation:resultsTwinkle 2.8s ease-in-out infinite}
+.results-sparkle.s1{top:18%;left:9%}.results-sparkle.s2{top:31%;right:12%;animation-delay:.9s}.results-sparkle.s3{top:76%;left:15%;animation-delay:1.5s}.results-sparkle.s4{top:64%;right:8%;animation-delay:2s}
+@keyframes resultsTwinkle{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.4)}}
+#resultsFrameTop{position:relative;z-index:3;min-height:64px;flex:0 0 64px;display:flex;align-items:center;gap:10px;margin:12px 14px 8px;padding:9px 12px;border:1px solid rgba(255,255,255,.72);border-radius:18px;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(20,90,150,.15)}
+#resultsFrameTitle{font-size:15px;font-weight:800;color:#12345a;white-space:nowrap}
+#resultsFramePercent{font-size:13px;font-weight:900;color:#0877d1;min-width:40px;text-align:right}
+#resultsFrameBar{width:150px;height:7px;background:rgba(255,255,255,.75);border-radius:99px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,70,130,.12)}
+#resultsFrameFill{height:100%;width:0;background:linear-gradient(90deg,#168cff,#54c8ff);border-radius:99px;transition:width .18s ease}
+#resultsFrameRefresh,#resultsFrameClose{border:0;border-radius:11px;padding:9px 12px;font-weight:800;cursor:pointer;transition:.18s ease}
+#resultsFrameRefresh{background:rgba(224,243,255,.95);color:#0877d1;margin-left:auto}
+#resultsFrameClose{background:rgba(255,255,255,.72);color:#294563}
+#resultsFrameRefresh:hover,#resultsFrameClose:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(30,100,160,.13)}
+#resultsFrameShell{position:relative;z-index:2;flex:1;min-height:0;margin:0 14px 14px;padding:7px;border:2px solid rgba(255,255,255,.9);border-radius:20px;background:rgba(255,255,255,.72);box-shadow:0 14px 36px rgba(16,83,135,.22),inset 0 1px 0 rgba(255,255,255,.9)}
+#resultsFrame{display:block;width:100%;height:100%;border:0;border-radius:14px;background:#fff}
+@media(max-width:600px){
+ #resultsFrameTop{min-height:54px;flex-basis:54px;margin:8px 8px 6px;padding:7px 9px;border-radius:14px;gap:7px}
+ #resultsFrameTitle{font-size:12px;overflow:hidden;text-overflow:ellipsis}
+ #resultsFramePercent{font-size:11px;min-width:31px}
+ #resultsFrameBar{width:62px;height:6px}
+ #resultsFrameRefresh,#resultsFrameClose{padding:7px 8px;font-size:11px}
+ #resultsFrameShell{margin:0 8px 8px;padding:4px;border-radius:15px}
+ #resultsFrame{border-radius:11px}
+ .results-cloud{transform:scale(.65)!important}
+}
+@media(prefers-reduced-motion:reduce){.results-cloud,.results-sparkle{animation:none!important}}
+</style>
 
-    <div class="results-stat-grid">
-      <div class="results-stat-card hadir"><div class="results-stat-icon"><i class="fa-solid fa-circle-check"></i></div><div><span>Hadir</span><strong id="resultCountHadir">—</strong></div></div>
-      <div class="results-stat-card sakit"><div class="results-stat-icon"><i class="fa-solid fa-bed-pulse"></i></div><div><span>Sakit</span><strong id="resultCountSakit">—</strong></div></div>
-      <div class="results-stat-card izin"><div class="results-stat-icon"><i class="fa-solid fa-file-signature"></i></div><div><span>Izin</span><strong id="resultCountIzin">—</strong></div></div>
-      <div class="results-stat-card terlambat"><div class="results-stat-icon"><i class="fa-solid fa-clock"></i></div><div><span>Terlambat</span><strong id="resultCountTerlambat">—</strong></div></div>
-      <div class="results-stat-card bolos"><div class="results-stat-icon"><i class="fa-solid fa-person-walking-arrow-right"></i></div><div><span>Bolos</span><strong id="resultCountBolos">—</strong></div></div>
-    </div>
-
-    <div class="results-sheet-wrap">
-      <div class="results-sheet-title"><i class="fa-solid fa-table-list"></i><span>Data Google Spreadsheet</span><span class="results-live-badge"><i class="fa-solid fa-circle"></i> LIVE</span></div>
-      <iframe id="resultsSheetFrame" title="Hasil Presensi Google Spreadsheet" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR3f_LifCDZ3C341cJYzRbdsJSfRqirIHuD7O7mk-TzyApW36N2bQlRMuZfM0g1BTFdGzDp8W4oFrgq/pubhtml?widget=true&headers=false" loading="lazy"></iframe>
-    </div>
+<div id="resultsFrameOverlay" aria-label="Data hasil presensi">
+  <div id="resultsSky" aria-hidden="true">
+    <div class="results-cloud c1"></div><div class="results-cloud c2"></div><div class="results-cloud c3"></div><div class="results-cloud c4"></div>
+    <div class="results-sparkle s1"></div><div class="results-sparkle s2"></div><div class="results-sparkle s3"></div><div class="results-sparkle s4"></div>
+  </div>
+  <div id="resultsFrameTop">
+    <div id="resultsFrameTitle">☁️ Hasil Presensi Siswa</div>
+    <div id="resultsFramePercent">0%</div>
+    <div id="resultsFrameBar"><div id="resultsFrameFill"></div></div>
+    <button id="resultsFrameRefresh" type="button" onclick="refreshResultsFrame()">↻ Refresh</button>
+    <button id="resultsFrameClose" type="button" onclick="closeResultsDashboard()">✕ Tutup</button>
+  </div>
+  <div id="resultsFrameShell">
+    <iframe id="resultsFrame" title="Data Google Spreadsheet" loading="eager" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </div>
 </div>
 
-<style id="results-dashboard-style">
-body.results-dashboard-open{overflow:hidden}
-.results-dashboard{position:fixed;inset:0;z-index:180;background:rgba(2,6,23,.62);backdrop-filter:blur(12px);padding:16px;overflow-y:auto}
-.results-dashboard-card{width:min(1180px,100%);min-height:calc(100vh - 32px);margin:auto;background:linear-gradient(145deg,#f8fbff,#fff);border:1px solid rgba(255,255,255,.75);border-radius:28px;box-shadow:0 30px 100px rgba(0,0,0,.28);overflow:hidden}
-.dark .results-dashboard-card{background:linear-gradient(145deg,#0f172a,#111827);border-color:rgba(148,163,184,.16)}
-.results-dashboard-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 24px 18px;border-bottom:1px solid rgba(148,163,184,.16);background:linear-gradient(135deg,rgba(59,130,246,.10),rgba(99,102,241,.06),transparent)}
-.results-dashboard-kicker{font-size:10px;font-weight:900;letter-spacing:.14em;color:#2563eb;margin-bottom:5px}.dark .results-dashboard-kicker{color:#60a5fa}
-.results-dashboard-head h2{margin:0;font-size:22px;font-weight:900;color:#0f172a}.dark .results-dashboard-head h2{color:#f8fafc}
-.results-dashboard-head p{margin:5px 0 0;font-size:11px;color:#64748b}.dark .results-dashboard-head p{color:#94a3b8}
-.results-dashboard-actions{display:flex;align-items:center;gap:8px}.results-dashboard-refresh,.results-dashboard-close{border:0;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;transition:.18s}.results-dashboard-refresh{padding:10px 13px;background:#e0f2fe;color:#0369a1;font-size:11px;font-weight:800}.results-dashboard-refresh:hover{transform:translateY(-1px);background:#bae6fd}.results-dashboard-close{width:40px;height:40px;background:#f1f5f9;color:#475569;font-size:17px}.results-dashboard-close:hover{background:#e2e8f0;transform:rotate(4deg)}.dark .results-dashboard-refresh{background:#082f49;color:#7dd3fc}.dark .results-dashboard-close{background:#1e293b;color:#cbd5e1}
-.results-stat-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:18px 24px}.results-stat-card{position:relative;display:flex;align-items:center;gap:11px;min-height:82px;padding:14px;border-radius:18px;color:#0f172a;overflow:hidden;border:1px solid rgba(255,255,255,.75);box-shadow:0 8px 22px rgba(15,23,42,.08)}.dark .results-stat-card{color:#f8fafc;border-color:rgba(148,163,184,.12)}.results-stat-card:after{content:"";position:absolute;width:70px;height:70px;border-radius:50%;right:-24px;bottom:-28px;background:rgba(255,255,255,.28)}
-.results-stat-card.hadir{background:linear-gradient(135deg,#dcfce7,#bbf7d0)}.results-stat-card.sakit{background:linear-gradient(135deg,#dbeafe,#bfdbfe)}.results-stat-card.izin{background:linear-gradient(135deg,#fef3c7,#fde68a)}.results-stat-card.terlambat{background:linear-gradient(135deg,#ffedd5,#fed7aa)}.results-stat-card.bolos{background:linear-gradient(135deg,#fee2e2,#fecaca)}
-.dark .results-stat-card.hadir{background:linear-gradient(135deg,#064e3b,#065f46)}.dark .results-stat-card.sakit{background:linear-gradient(135deg,#1e3a8a,#1d4ed8)}.dark .results-stat-card.izin{background:linear-gradient(135deg,#713f12,#92400e)}.dark .results-stat-card.terlambat{background:linear-gradient(135deg,#7c2d12,#9a3412)}.dark .results-stat-card.bolos{background:linear-gradient(135deg,#7f1d1d,#991b1b)}
-.results-stat-icon{width:38px;height:38px;flex:0 0 38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.62);font-size:16px}.dark .results-stat-icon{background:rgba(255,255,255,.12)}.results-stat-card span{display:block;font-size:10px;font-weight:800;opacity:.72}.results-stat-card strong{display:block;font-size:23px;line-height:1.1;font-weight:950;margin-top:3px}
-.results-sheet-wrap{margin:0 24px 24px;border:1px solid rgba(148,163,184,.18);border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 10px 28px rgba(15,23,42,.08)}.dark .results-sheet-wrap{background:#0b1220}.results-sheet-title{height:44px;display:flex;align-items:center;gap:8px;padding:0 14px;font-size:11px;font-weight:800;color:#475569;background:#f8fafc;border-bottom:1px solid rgba(148,163,184,.16)}.dark .results-sheet-title{background:#111827;color:#cbd5e1}.results-live-badge{margin-left:auto;font-size:9px;color:#16a34a;background:#dcfce7;border-radius:999px;padding:4px 8px}.results-live-badge i{font-size:6px;vertical-align:middle}.results-sheet-wrap iframe{display:block;width:100%;height:58vh;min-height:420px;border:0}
-@media(max-width:900px){.results-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.results-stat-card:last-child{grid-column:1/-1}.results-dashboard-head{padding:18px}.results-stat-grid{padding:14px 18px}.results-sheet-wrap{margin:0 18px 18px}}
-@media(max-width:560px){.results-dashboard{padding:0}.results-dashboard-card{min-height:100vh;border-radius:0}.results-dashboard-head{align-items:flex-start}.results-dashboard-head h2{font-size:18px}.results-dashboard-refresh span{display:none}.results-dashboard-refresh{width:40px;height:40px;padding:0}.results-stat-grid{gap:8px}.results-stat-card{min-height:76px;padding:11px}.results-stat-card strong{font-size:20px}.results-sheet-wrap iframe{height:55vh;min-height:360px}}
-</style>
+<script id="results-direct-controller">
+/* =========================================================
+   HASIL PRESENSI — FRAME GOOGLE SPREADSHEET RINGAN
+   Hanya satu iframe. Tidak memakai fetch/GViz/dashboard data.
+   Menu XA, XB, XC, dst. tetap berasal langsung dari Spreadsheet.
+   ========================================================= */
+const RESULTS_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR3f_LifCDZ3C341cJYzRbdsJSfRqirIHuD7O7mk-TzyApW36N2bQlRMuZfM0g1BTFdGzDp8W4oFrgq/pubhtml';
+let resultsFrameTimer=null;
+let resultsFrameProgress=0;
 
+function setResultsFrameProgress(value){
+  resultsFrameProgress=Math.max(0,Math.min(100,value));
+  const fill=document.getElementById('resultsFrameFill');
+  const pct=document.getElementById('resultsFramePercent');
+  if(fill)fill.style.width=resultsFrameProgress+'%';
+  if(pct)pct.textContent=Math.round(resultsFrameProgress)+'%';
+}
+
+function startResultsFrameProgress(){
+  if(resultsFrameTimer)clearInterval(resultsFrameTimer);
+  setResultsFrameProgress(5);
+  resultsFrameTimer=setInterval(()=>{
+    if(resultsFrameProgress<88)setResultsFrameProgress(resultsFrameProgress+3);
+    else if(resultsFrameProgress<96)setResultsFrameProgress(resultsFrameProgress+1);
+  },180);
+}
+
+function openResultsSheet(){
+  const overlay=document.getElementById('resultsFrameOverlay');
+  const frame=document.getElementById('resultsFrame');
+  if(!overlay||!frame){window.location.href=RESULTS_SHEET_URL+'?widget=true&headers=false';return;}
+  overlay.style.display='flex';
+  document.body.style.overflow='hidden';
+  startResultsFrameProgress();
+  frame.onload=()=>{
+    if(resultsFrameTimer)clearInterval(resultsFrameTimer);
+    setResultsFrameProgress(100);
+  };
+  frame.src=RESULTS_SHEET_URL+'?widget=true&headers=false';
+}
+
+function refreshResultsFrame(){
+  const frame=document.getElementById('resultsFrame');
+  if(!frame)return;
+  startResultsFrameProgress();
+  const current=frame.src;
+  frame.src='about:blank';
+  setTimeout(()=>frame.src=current || (RESULTS_SHEET_URL+'?widget=true&headers=false'),30);
+}
+
+function closeResultsDashboard(){
+  const overlay=document.getElementById('resultsFrameOverlay');
+  if(overlay)overlay.style.display='none';
+  document.body.style.overflow='';
+  if(resultsFrameTimer)clearInterval(resultsFrameTimer);
+}
+
+function openResultsInGoogle(){
+  window.open(RESULTS_SHEET_URL,'_blank','noopener');
+}
+</script>
+
+<script id="role-login-controller">
+/* =========================================================
+   LOGIN + ROLE ACCESS CONTROLLER — SINKRON DENGAN APPS SCRIPT V2
+   Contract response:
+   success, action, apiVersion, errorCode, message, user
+   ========================================================= */
+const LOGIN_API_URL = 'https://script.google.com/macros/s/AKfycbwhR3Qz8uwyMkjArbqHnWiBWVvjUPmj40jhPZW7JwNGpeI1dVjSjpEjga_zoSgxSQtMrg/exec';
+const LOGIN_API_VERSION = '2.0';
+const LOGIN_SESSION_KEY = 'sman2_presensi_login_session_v1';
+let currentLoginUser = null;
+let loginConnectionState = 'unknown';
+
+function toggleLoginPassword(){
+  const input=document.getElementById('loginPassword'), icon=document.getElementById('loginPasswordIcon');
+  if(!input)return;
+  input.type=input.type==='password'?'text':'password';
+  if(icon)icon.className=input.type==='password'?'fa-solid fa-eye':'fa-solid fa-eye-slash';
+}
+
+function showLoginError(message){
+  const el=document.getElementById('loginError');
+  if(el){el.textContent=message;el.classList.add('show');}
+}
+function clearLoginError(){const el=document.getElementById('loginError');if(el){el.textContent='';el.classList.remove('show');}}
+
+function explainLoginError(result){
+  if(!result) return 'Tidak ada respons dari Google Apps Script V2.';
+  const map={
+    INVALID_ACTION:'Permintaan ke Apps Script tidak valid.',
+    MISSING_CREDENTIALS:'Username dan password wajib diisi.',
+    INVALID_CREDENTIALS:'Username atau password salah. Periksa akun pada sheet USERS.',
+    USERS_NOT_FOUND:'Sheet USERS belum ditemukan pada spreadsheet yang terhubung ke Apps Script.',
+    NO_USERS:'Sheet USERS ada, tetapi belum berisi akun.',
+    MISSING_COLUMN:'Kolom sheet USERS belum lengkap. Pastikan Username, Password, Role, Nama, dan Status tersedia.',
+    ACCOUNT_INACTIVE:'Akun ditemukan tetapi statusnya tidak aktif. Ubah Status menjadi AKTIF.',
+    INVALID_ROLE:'Role akun tidak valid. Gunakan ADMIN, GURU, atau SISWA.',
+    NO_SPREADSHEET:'Apps Script tidak menemukan spreadsheet yang terhubung.',
+    API_VERSION_MISMATCH:'Versi Apps Script dan HTML tidak sama. Deploy ulang Apps Script V2 terbaru.',
+    PING_FAILED:'Koneksi ke Google Apps Script V2 gagal.',
+    TIMEOUT:'Koneksi ke Google Apps Script V2 timeout. Periksa deployment Web App dan izin akses.',
+    NETWORK_ERROR:'Tidak dapat memuat respons Google Apps Script. Periksa deployment Web App dan izin akses.',
+    SERVER_ERROR:'Terjadi kesalahan pada server Google Apps Script.',
+    INVALID_RESPONSE:'Respons Google Apps Script tidak lengkap atau tidak sesuai format V2.'
+  };
+  return map[result.errorCode] || result.message || 'Login gagal.';
+}
+
+function validateApiResponse(data, expectedAction){
+  if(!data || typeof data!=='object'){
+    return {success:false,errorCode:'INVALID_RESPONSE',message:'Respons Google Apps Script tidak dapat dibaca.'};
+  }
+  if(data.apiVersion && String(data.apiVersion)!==LOGIN_API_VERSION){
+    return {success:false,errorCode:'API_VERSION_MISMATCH',message:'Versi Apps Script tidak sama dengan HTML.'};
+  }
+  if(expectedAction && data.action && String(data.action).toLowerCase()!==expectedAction){
+    return {success:false,errorCode:'INVALID_RESPONSE',message:'Action respons Apps Script tidak sesuai.'};
+  }
+  if(typeof data.success!=='boolean'){
+    return {success:false,errorCode:'INVALID_RESPONSE',message:'Format respons Apps Script tidak sesuai V2.'};
+  }
+  return data;
+}
+
+function toggleLoginDebug(){
+  const body=document.getElementById('loginDebugBody');
+  const btn=document.getElementById('loginDebugToggle');
+  if(!body)return;
+  const hidden=body.style.display==='none';
+  body.style.display=hidden?'grid':'none';
+  if(btn)btn.textContent=hidden?'Sembunyikan':'Tampilkan';
+}
+function setLoginDebug(id,value,state){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.textContent=value==null?'-':String(value);
+  el.classList.remove('login-debug-ok','login-debug-warn','login-debug-error');
+  if(state)el.classList.add('login-debug-'+state);
+}
+function resetLoginDebug(){
+  setLoginDebug('debugApiUrl',LOGIN_API_URL||'-');
+  setLoginDebug('debugAction','-');
+  setLoginDebug('debugCallback','-');
+  setLoginDebug('debugRequest','Belum dikirim');
+  setLoginDebug('debugJsonp','Belum diuji');
+  setLoginDebug('debugResponse','Belum diterima');
+  setLoginDebug('debugApiVersion','-');
+  setLoginDebug('debugSuccess','-');
+  setLoginDebug('debugRole','-');
+  setLoginDebug('debugError','-');
+  const raw=document.getElementById('loginDebugRaw');if(raw)raw.textContent='Belum ada respons.';
+}
+function debugJsonpResponse(data){
+  setLoginDebug('debugResponse','Respons callback diterima','ok');
+  setLoginDebug('debugJsonp','CALLBACK DITERIMA','ok');
+  setLoginDebug('debugApiVersion',data&&data.apiVersion||'-',data&&data.apiVersion===LOGIN_API_VERSION?'ok':'warn');
+  setLoginDebug('debugSuccess',data&&typeof data.success==='boolean'?String(data.success):'bukan boolean',data&&data.success===true?'ok':data&&data.success===false?'error':'warn');
+  setLoginDebug('debugRole',data&&data.user&&data.user.role||'-',data&&data.user&&data.user.role?'ok':'warn');
+  setLoginDebug('debugError',data&&data.errorCode?data.errorCode:'(kosong)',data&&data.errorCode?'error':'ok');
+  const raw=document.getElementById('loginDebugRaw');if(raw){try{raw.textContent=JSON.stringify(data,null,2);}catch(e){raw.textContent=String(data);}}
+}
+function debugJsonpError(code,message){
+  setLoginDebug('debugResponse',message||code||'Gagal','error');
+  setLoginDebug('debugJsonp',code==='TIMEOUT'?'TIMEOUT':'ERROR','error');
+  setLoginDebug('debugError',code||'UNKNOWN','error');
+}
+
+function buildLoginApiUrl(action, params){
+  const url=new URL(LOGIN_API_URL);
+  url.searchParams.set('action',action);
+  Object.entries(params||{}).forEach(([key,value])=>url.searchParams.set(key,String(value)));
+  return url.toString();
+}
+
+function testLoginJsonpOnly(){
+  resetLoginDebug();
+  setLoginDebug('debugAction','login_test');
+  const cb='loginTestCallback_'+Date.now()+'_'+Math.floor(Math.random()*10000);
+  setLoginDebug('debugCallback',cb);
+  const script=document.createElement('script');
+  let settled=false;
+  const timer=setTimeout(()=>{
+    if(settled)return;settled=true;cleanup();
+    debugJsonpError('TIMEOUT','login_test tidak mengirim callback dalam 10 detik.');
+  },10000);
+  function cleanup(){clearTimeout(timer);delete window[cb];if(script.parentNode)script.parentNode.removeChild(script);}
+  window[cb]=data=>{if(settled)return;settled=true;cleanup();debugJsonpResponse(data);};
+  script.onload=()=>setLoginDebug('debugJsonp','SCRIPT DIMUAT — callback diterima atau menunggu...','warn');
+  script.onerror=()=>{if(settled)return;settled=true;cleanup();debugJsonpError('NETWORK_ERROR','Browser tidak dapat memuat script login_test.');};
+  const url=buildLoginApiUrl('login_test',{callback:cb,_cb_nonce:Date.now()+'_'+Math.floor(Math.random()*100000)});
+  script.src=url;
+  setLoginDebug('debugRequest',url);
+  setLoginDebug('debugResponse','Menunggu callback...','warn');
+  setLoginDebug('debugJsonp','SCRIPT DIKIRIM','warn');
+  document.head.appendChild(script);
+}
+
+function testLoginConnection(){
+  const hint=document.getElementById('loginApiHint');
+  resetLoginDebug();
+  setLoginDebug('debugAction','ping');
+  clearLoginError();
+  if(hint)hint.textContent='Menguji koneksi Google Apps Script V2...';
+  if(!LOGIN_API_URL || LOGIN_API_URL.indexOf('/exec')<0){
+    loginConnectionState='error';
+    showLoginError('URL Web App Apps Script belum benar. Gunakan URL deployment yang berakhiran /exec.');
+    if(hint)hint.textContent='URL Apps Script belum benar.';
+    return;
+  }
+
+  const cb='pingCallback_'+Date.now()+'_'+Math.floor(Math.random()*10000);
+  setLoginDebug('debugCallback',cb);
+  const script=document.createElement('script');
+  let settled=false;
+  const timer=setTimeout(()=>{
+    cleanup();settled=true;loginConnectionState='error';
+    showLoginError(explainLoginError({errorCode:'TIMEOUT'}));
+    if(hint)hint.textContent='Koneksi Apps Script gagal.';
+  },10000);
+  function cleanup(){clearTimeout(timer);delete window[cb];if(script.parentNode)script.parentNode.removeChild(script);}
+  window[cb]=data=>{
+    if(settled)return;
+    settled=true;cleanup();
+    debugJsonpResponse(data);
+    const result=validateApiResponse(data,'ping');
+    if(result.success && result.apiVersion===LOGIN_API_VERSION){
+      loginConnectionState='ok';
+      if(hint)hint.textContent='Terhubung ✓ Google Apps Script V2';
+    }else{
+      loginConnectionState='error';
+      showLoginError(explainLoginError(result));
+      if(hint)hint.textContent='Koneksi Apps Script gagal.';
+    }
+  };
+  script.onerror=()=>{
+    if(settled)return;
+    settled=true;cleanup();loginConnectionState='error';
+    showLoginError(explainLoginError({errorCode:'NETWORK_ERROR'}));
+    if(hint)hint.textContent='Koneksi Apps Script gagal.';
+  };
+  script.src=buildLoginApiUrl('ping',{callback:cb});
+  setLoginDebug('debugRequest',script.src.replace(/([?&]password=)[^&]*/i,'$1••••••••'));
+  document.body.appendChild(script);
+}
+
+async function handleLogin(e){
+  e.preventDefault();clearLoginError();
+  const username=document.getElementById('loginUsername').value.trim();
+  const password=document.getElementById('loginPassword').value;
+  const btn=document.getElementById('loginSubmit');
+  if(!username||!password){showLoginError(explainLoginError({errorCode:'MISSING_CREDENTIALS'}));return;}
+  btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Memeriksa...';
+  try{
+    if(!LOGIN_API_URL || LOGIN_API_URL.indexOf('/exec')<0){
+      throw new Error('URL Web App Apps Script belum benar.');
+    }
+    const raw=await loginViaJsonp(username,password);
+    const result=validateApiResponse(raw,'login');
+    if(!result.success)throw Object.assign(new Error(explainLoginError(result)),{code:result.errorCode});
+    if(!result.user || !result.user.role)throw Object.assign(new Error(explainLoginError({errorCode:'INVALID_RESPONSE'})),{code:'INVALID_RESPONSE'});
+    applyLogin(result.user);
+  }catch(err){showLoginError(err.message||'Login gagal.');}
+  finally{btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-right-to-bracket mr-2"></i>Masuk';}
+}
+
+function loginViaJsonp(username,password){
+  return new Promise((resolve,reject)=>{
+    const cb='loginCallback_'+Date.now()+'_'+Math.floor(Math.random()*10000);
+    const nonce=Date.now()+'_'+Math.floor(Math.random()*100000);
+    setLoginDebug('debugAction','login');
+    setLoginDebug('debugCallback',cb);
+    const script=document.createElement('script');
+    let settled=false;
+    const timer=setTimeout(()=>{
+      if(settled)return;settled=true;cleanup();
+      debugJsonpError('TIMEOUT','Tidak ada callback JSONP dalam 15 detik.');
+      reject(Object.assign(new Error(explainLoginError({errorCode:'TIMEOUT'})),{code:'TIMEOUT'}));
+    },15000);
+    function cleanup(){clearTimeout(timer);delete window[cb];if(script.parentNode)script.parentNode.removeChild(script);}
+    window[cb]=data=>{
+      if(settled)return;settled=true;cleanup();
+      debugJsonpResponse(data);
+      resolve(data);
+    };
+    script.onload=()=>{
+      setLoginDebug('debugJsonp','SCRIPT DIMUAT — menunggu callback...','warn');
+    };
+    script.onerror=(event)=>{
+      if(settled)return;settled=true;cleanup();
+      setLoginDebug('debugJsonp','SCRIPT ERROR','error');
+      setLoginDebug('debugResponse','Browser gagal memuat endpoint JSONP.','error');
+      setLoginDebug('debugError','NETWORK_ERROR','error');
+      const detail='Endpoint JSONP gagal dimuat. Periksa deployment Web App, akses Anyone, dan URL /exec.';
+      reject(Object.assign(new Error(detail),{code:'NETWORK_ERROR'}));
+    };
+    const requestUrl=buildLoginApiUrl('login',{
+      username:username,
+      password:password,
+      callback:cb,
+      _cb_nonce:nonce
+    });
+    script.src=requestUrl;
+    setLoginDebug('debugRequest',requestUrl.replace(/([?&]password=)[^&]*/i,'$1••••••••'));
+    setLoginDebug('debugResponse','Menunggu callback...','warn');
+    setLoginDebug('debugJsonp','SCRIPT DIKIRIM','warn');
+    document.head.appendChild(script);
+  });
+}
+
+function applyLogin(user){
+  currentLoginUser={username:user.username||'',role:String(user.role||'').toUpperCase(),nama:user.nama||'',nis:user.nis||'',nisn:user.nisn||'',kelas:user.kelas||''};
+  localStorage.setItem(LOGIN_SESSION_KEY,JSON.stringify(currentLoginUser));
+  configureRoleAccess();
+  document.getElementById('loginScreen').style.display='none';
+  document.body.classList.remove('login-locked');
+  const info=document.getElementById('currentUserInfo');if(info)info.style.display='flex';
+  document.getElementById('currentUserName').textContent=currentLoginUser.nama||currentLoginUser.username;
+  document.getElementById('currentUserRole').textContent='· '+currentLoginUser.role;
+  if(currentLoginUser.role==='SISWA')setTimeout(()=>openResultsSheet(),100);
+}
+
+function configureRoleAccess(){
+  const role=currentLoginUser&&currentLoginUser.role;
+  const settings=document.getElementById('settingsButton');
+  const results=document.getElementById('resultsButton');
+  const logout=document.getElementById('logoutButton');
+  if(logout)logout.classList.remove('role-hidden');
+  if(settings)settings.classList.toggle('role-hidden',role!=='ADMIN');
+  if(results)results.classList.remove('role-hidden');
+  document.querySelectorAll('[data-role]').forEach(el=>{
+    const allowed=String(el.dataset.role).split(',').map(x=>x.trim().toUpperCase());
+    el.classList.toggle('role-hidden',allowed.indexOf(role)<0);
+  });
+  if(role==='SISWA'){
+    const main=document.querySelector('body > main');if(main)main.style.display='none';
+    if(settings)settings.classList.add('role-hidden');
+  }else{
+    const main=document.querySelector('body > main');if(main)main.style.display='';
+  }
+}
+
+function restoreLoginSession(){
+  try{
+    const raw=localStorage.getItem(LOGIN_SESSION_KEY);if(!raw)return false;
+    const user=JSON.parse(raw);if(!user||!user.role)return false;
+    applyLogin(user);return true;
+  }catch(e){localStorage.removeItem(LOGIN_SESSION_KEY);return false;}
+}
+function logoutApp(){
+  localStorage.removeItem(LOGIN_SESSION_KEY);currentLoginUser=null;
+  document.body.classList.add('login-locked');
+  const login=document.getElementById('loginScreen');if(login)login.style.display='flex';
+  const main=document.querySelector('body > main');if(main)main.style.display='';
+  const info=document.getElementById('currentUserInfo');if(info)info.style.display='none';
+  document.getElementById('loginUsername').value='';document.getElementById('loginPassword').value='';clearLoginError();
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  // Mode tanpa login: aplikasi langsung dibuka sebagai Admin lokal.
+  currentLoginUser={username:'admin',role:'ADMIN',nama:'ADMIN',nis:'',nisn:'',kelas:''};
+  document.body.classList.remove('login-locked');
+  const login=document.getElementById('loginScreen');if(login)login.style.display='none';
+  const main=document.querySelector('body > main');if(main)main.style.display='';
+  const settings=document.getElementById('settingsButton');if(settings)settings.classList.remove('role-hidden');
+  const results=document.getElementById('resultsButton');if(results)results.classList.remove('role-hidden');
+  const info=document.getElementById('currentUserInfo');if(info)info.style.display='none';
+  const logout=document.getElementById('logoutButton');if(logout)logout.style.display='none';
+});
+</script>
 </body>
 </html>
