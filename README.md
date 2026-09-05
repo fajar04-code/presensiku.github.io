@@ -20,6 +20,176 @@
     </script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style id="responsive-modern-ui">
+/* ===== MODERN RESPONSIVE UI — hanya tampilan ===== */
+:root{
+  --ui-radius:18px;
+  --ui-shadow:0 10px 30px rgba(15,23,42,.08);
+  --ui-shadow-hover:0 16px 38px rgba(15,23,42,.13);
+}
+html{scroll-behavior:smooth}
+body{
+  -webkit-tap-highlight-color:transparent;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(59,130,246,.07), transparent 30%),
+    radial-gradient(circle at 100% 0%, rgba(16,185,129,.06), transparent 28%),
+    #f8fafc;
+}
+.dark body{
+  background:
+    radial-gradient(circle at 0% 0%, rgba(59,130,246,.12), transparent 30%),
+    #0f172a;
+}
+
+/* Header / cards */
+header, .card, [class*="shadow"]{
+  transition:box-shadow .2s ease, transform .2s ease, border-color .2s ease;
+}
+button{
+  min-height:40px;
+  border-radius:12px !important;
+  transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0) scale(.98)}
+input, select, textarea{
+  border-radius:12px !important;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(59,130,246,.14);
+}
+
+/* Class tabs */
+#classTabs{
+  scrollbar-width:thin;
+  -webkit-overflow-scrolling:touch;
+}
+#classTabs button{
+  white-space:nowrap;
+  flex-shrink:0;
+}
+
+/* Student rows */
+#studentList > *,
+#studentList .student-row{
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+#studentList > *:hover{
+  box-shadow:var(--ui-shadow-hover);
+}
+
+/* Link result */
+#outputLinkArea{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  line-height:1.55;
+}
+
+/* ===== Windows / desktop ===== */
+@media (min-width: 1024px){
+  main{max-width:1500px !important}
+  header .container{max-width:1500px !important}
+  #studentList{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
+}
+
+/* ===== HP / tablet ===== */
+@media (max-width: 1023px){
+  body{font-size:15px}
+  header{
+    position:sticky;
+    top:0;
+    z-index:40;
+    backdrop-filter:blur(14px);
+    background:rgba(255,255,255,.88) !important;
+  }
+  .dark header{background:rgba(15,23,42,.88) !important}
+  main{padding-left:12px !important;padding-right:12px !important}
+  #studentList{display:block}
+  #studentList > *{margin-bottom:10px}
+}
+
+/* ===== HP portrait ===== */
+@media (max-width: 640px){
+  header{
+    padding:10px 12px !important;
+  }
+  header h1{
+    font-size:1rem !important;
+    line-height:1.25 !important;
+  }
+  header p{font-size:.72rem !important}
+
+  /* Tombol header menjadi lebih ringkas */
+  header button{
+    min-height:38px;
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+
+  /* Jangan biarkan tabel/area melebar keluar layar */
+  .overflow-x-auto{
+    max-width:100%;
+    overflow-x:auto;
+  }
+
+  /* Modal nyaman disentuh */
+  [role="dialog"] > div,
+  .fixed > div{
+    max-height:92vh;
+  }
+
+  /* Form 2 kolom turun menjadi 1 kolom */
+  .grid.grid-cols-2{
+    grid-template-columns:1fr !important;
+  }
+
+  /* Area tombol lebih mudah disentuh */
+  .flex.gap-2, .flex.gap-3{
+    flex-wrap:wrap;
+  }
+
+  button{min-height:42px}
+
+  /* Font dan padding kartu siswa */
+  #studentList .p-4,
+  #studentList .p-3{
+    padding:12px !important;
+  }
+}
+
+/* ===== HP sangat kecil ===== */
+@media (max-width: 400px){
+  main{padding-left:8px !important;padding-right:8px !important}
+  header{padding-left:8px !important;padding-right:8px !important}
+  header .flex{gap:5px !important}
+  button{font-size:.78rem}
+}
+</style>
+
+<style id="view-mode-overrides">
+@media (min-width:641px){
+  html.force-phone body{font-size:15px}
+  html.force-phone main{max-width:700px !important;margin-left:auto;margin-right:auto}
+  html.force-phone #studentList{display:block}
+}
+@media (max-width:1023px){
+  html.force-windows main{max-width:1500px !important;margin-left:auto;margin-right:auto}
+  html.force-windows #studentList{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
+}
+@media (max-width:640px){
+  html.force-windows #studentList{display:block}
+}
+</style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 h-full flex flex-col transition-colors duration-200">
 
@@ -3435,7 +3605,7 @@
         });
 
         function loadSchoolData() {
-            const savedData = localStorage.getItem('sman2_presensi_data_v3');
+            const savedData = localStorage.getItem('sman2_presensi_data_v4');
             if (savedData) {
                 try {
                     schoolData = JSON.parse(savedData);
@@ -3473,7 +3643,7 @@
                     student.selected = !!selectedStudents[student.id];
                 });
             });
-            localStorage.setItem('sman2_presensi_data_v3', JSON.stringify(schoolData));
+            localStorage.setItem('sman2_presensi_data_v4', JSON.stringify(schoolData));
             updateStatistics();
         }
 
@@ -3482,7 +3652,7 @@
                 'Reset Data Bawaan',
                 'Apakah Anda yakin ingin mengembalikan seluruh data siswa dan kelas ke data awal? Perubahan kustom Anda akan terhapus.',
                 () => {
-                    localStorage.removeItem('sman2_presensi_data_v3');
+                    localStorage.removeItem('sman2_presensi_data_v4');
                     loadSchoolData();
                     renderClassTabs();
                     renderStudentList();
@@ -4106,5 +4276,56 @@
         });
         
     </script>
+
+<!-- Menu Tampilan HP / Windows — UI only -->
+<div id="viewModeMenu" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+  <div class="flex items-center gap-1 p-1.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl shadow-2xl border border-slate-200 dark:border-slate-700">
+    <button type="button" id="viewModePhone"
+      class="px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
+      title="Tampilan HP">
+      <i class="fa-solid fa-mobile-screen mr-1"></i> HP
+    </button>
+    <button type="button" id="viewModeWindows"
+      class="px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
+      title="Tampilan Windows">
+      <i class="fa-brands fa-windows mr-1"></i> Windows
+    </button>
+    <button type="button" id="viewModeAuto"
+      class="px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
+      title="Ikuti ukuran layar">
+      <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Otomatis
+    </button>
+  </div>
+</div>
+
+<script id="view-mode-ui-only">
+(function(){
+  const root=document.documentElement;
+  const menu=document.getElementById('viewModeMenu');
+  const phone=document.getElementById('viewModePhone');
+  const windows=document.getElementById('viewModeWindows');
+  const auto=document.getElementById('viewModeAuto');
+
+  function setMode(mode){
+    root.classList.remove('force-phone','force-windows');
+    if(mode==='phone') root.classList.add('force-phone');
+    if(mode==='windows') root.classList.add('force-windows');
+    try{localStorage.setItem('sman2_view_mode',mode)}catch(e){}
+    [phone,windows,auto].forEach(b=>{
+      if(b) b.classList.remove('bg-blue-600','text-white');
+    });
+    const active=mode==='phone'?phone:mode==='windows'?windows:auto;
+    if(active) active.classList.add('bg-blue-600','text-white');
+  }
+
+  phone && phone.addEventListener('click',()=>setMode('phone'));
+  windows && windows.addEventListener('click',()=>setMode('windows'));
+  auto && auto.addEventListener('click',()=>setMode('auto'));
+
+  let saved='auto';
+  try{saved=localStorage.getItem('sman2_view_mode')||'auto'}catch(e){}
+  setMode(saved);
+})();
+</script>
 </body>
 </html>
